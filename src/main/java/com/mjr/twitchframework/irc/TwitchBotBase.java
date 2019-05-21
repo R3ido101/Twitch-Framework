@@ -15,6 +15,4 @@ public abstract class TwitchBotBase {
 	protected abstract void onJoin(String channel, String sender, String login, String hostname);
 
 	protected abstract void onPart(String channel, String sender, String login, String hostname);
-
-	protected abstract void onDisconnect();
 }
