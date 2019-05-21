@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
 
 import com.mjr.twitchframework.Event.IRCEventType;
@@ -43,47 +44,50 @@ public class TwitchIRCClient extends PircBot {
 
 	@Override
 	public void onMessage(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {
-		TwitchIRCManager.triggerOnMessageEvent(IRCEventType.MESSAGE, channel, sender, login, hostname, userID, subscriber, message);
+		TwitchEventManager.triggerOnMessageEvent(IRCEventType.MESSAGE, channel, sender, login, hostname, userID, subscriber, message);
 	}
 
 	@Override
 	public void onMessageExtra(final String line, final String channel, final String sender, final String login, final String hostname, final String message) {
-		System.out.println("[onMessage]" + channel + " | " + sender + " > " + message);
-
+		TwitchEventManager.triggerOnMessageExtraEvent(IRCEventType.MESSAGEEXTRA, line, channel, sender, login, hostname, message);
 	}
 
 	@Override
 	protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
-		System.out.println("[onNotice]" + notice);
+		TwitchEventManager.triggerOnNoticeEvent(IRCEventType.NOTICE, sourceNick, sourceLogin, sourceHostname, target, notice);
 	}
 
 	@Override
 	public void onPrivateMessage(String sender, String login, String hostname, String channel, String message) {
-		System.out.println("[onMessage]" + channel + " | " + sender + " > " + message);
-	}
+		TwitchEventManager.triggerOnPrivateMessageEvent(IRCEventType.PRIVATEMESSAGE, sender, login, hostname, channel, message);	
+		}
 
 	@Override
 	protected void onUnknown(String line) {
-		System.out.println("[onUnknown]" + line);
-
+		if(line.contains("UNKNOWN"))
+			TwitchEventManager.triggerOnDisconnectEvent(IRCEventType.DISCONNECT, this);
+		else
+			TwitchEventManager.triggerOnUnknownEvent(IRCEventType.UNKNOWN, line);
 	}
 
 	@Override
 	protected void onJoin(String channel, String sender, String login, String hostname) {
-		System.out.println("[onPart]" + channel + " | " + sender);
-
+		TwitchEventManager.triggerOnJoinEvent(IRCEventType.JOIN, channel, sender, login, hostname);
 	}
 
 	@Override
 	protected void onPart(String channel, String sender, String login, String hostname) {
-		System.out.println("[onPart]" + channel + " | " + sender);
-
+		TwitchEventManager.triggerOnPartEvent(IRCEventType.PART, channel, sender, login, hostname);
 	}
 
 	@Override
 	protected void onDisconnect() {
-		System.out.println("[onDisconnect]");
-
+		TwitchEventManager.triggerOnDisconnectEvent(IRCEventType.DISCONNECT, this);
+		try {
+			this.reconnect();
+		} catch (IOException | IrcException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void sendMessage(String message) {
