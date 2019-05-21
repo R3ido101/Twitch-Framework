@@ -11,7 +11,7 @@ import com.mjr.twitchframework.irc.events.IRCPartEvent;
 import com.mjr.twitchframework.irc.events.IRCPrivateMessageEvent;
 import com.mjr.twitchframework.irc.events.IRCUnknownEvent;
 
-public class TwitchEventManager {
+public class TwitchEventHooks {
 	public static void triggerOnMessageEvent(IRCEventType type, final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {
 		for (Event event : TwitchIRCManager.getEventListeners()) {
 			if (type.getName().equalsIgnoreCase(event.typeIRC.getName()))
