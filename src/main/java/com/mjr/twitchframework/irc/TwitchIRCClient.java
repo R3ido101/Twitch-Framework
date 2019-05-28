@@ -11,27 +11,33 @@ import com.mjr.twitchframework.Event.IRCEventType;
 
 public class TwitchIRCClient extends PircBot {
 
+	private int ID;
+
 	private List<String> channels = new ArrayList<String>();
+
+	public TwitchIRCClient(int iD) {
+		this.ID = iD;
+	}
 
 	public boolean connectToTwitch(String username, String password) throws IOException {
 		if (!username.equals("") && !password.equals("") && !(username == null) && !(password == null)) {
 			this.setName(username);
 			try {
-				System.out.println("Connecting to Twitch!");
+				System.out.println("Connecting to Twitch! Client ID: " + ID);
 				this.connect("irc.chat.twitch.tv", 6667, password);
 				this.sendRawLine("CAP REQ :twitch.tv/commands");
 				this.sendRawLine("CAP REQ :twitch.tv/membership");
 				this.sendRawLine("CAP REQ :twitch.tv/tags");
-				System.out.println("Connected to Twitch!");
+				System.out.println("Connected to Twitch! Client ID: " + ID);
 			} catch (Exception e) {
 				e.printStackTrace();
-				System.out.println("Failed to connect to Twitch! Check your internet connection!");
+				System.out.println("Failed to connect to Twitch! Check your internet connection! Client ID: " + ID);
 
 				return false;
 			}
 			return true;
 		} else {
-			System.out.println("Error! No Login details were set! Go to settings to enter them! \n Use the Reconnect button when done!");
+			System.out.println("Error! No Login details were set! Go to settings to enter them! \n Use the Reconnect button when done! Client ID: " + ID);
 		}
 		return false;
 	}
@@ -59,12 +65,12 @@ public class TwitchIRCClient extends PircBot {
 
 	@Override
 	public void onPrivateMessage(String sender, String login, String hostname, String channel, String message) {
-		TwitchEventHooks.triggerOnPrivateMessageEvent(IRCEventType.PRIVATEMESSAGE, sender, login, hostname, channel, message);	
-		}
+		TwitchEventHooks.triggerOnPrivateMessageEvent(IRCEventType.PRIVATEMESSAGE, sender, login, hostname, channel, message);
+	}
 
 	@Override
 	protected void onUnknown(String line) {
-		if(line.contains("UNKNOWN"))
+		if (line.contains("UNKNOWN"))
 			TwitchEventHooks.triggerOnDisconnectEvent(IRCEventType.DISCONNECT, this);
 		else
 			TwitchEventHooks.triggerOnUnknownEvent(IRCEventType.UNKNOWN, line);
@@ -84,12 +90,16 @@ public class TwitchIRCClient extends PircBot {
 	protected void onDisconnect() {
 		TwitchEventHooks.triggerOnDisconnectEvent(IRCEventType.DISCONNECT, this);
 		try {
-			this.reconnect();
+			do {
+				System.out.println("Trying to reconnect client, Client ID: " + ID);
+				this.disconnect();
+				this.reconnect();
+			} while (this.isConnected() == false);
 		} catch (IOException | IrcException e) {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void sendMessage(String message) {
 		this.sendMessage(message);
 	}
@@ -118,5 +128,13 @@ public class TwitchIRCClient extends PircBot {
 	public void removeChannelWithDisconnect(String channel) {
 		this.channels.remove(channel);
 		this.partChannel("#" + channel);
+	}
+
+	public int getID() {
+		return ID;
+	}
+
+	public boolean isClientConnected() {
+		return this.isConnected();
 	}
 }
