@@ -52,43 +52,60 @@ public class TwitchIRCManager {
 	}
 
 	public static void setupClients(List<String> channels, String username, String password, int limit, boolean verbose) throws IOException {
+		int channelsSize = channels.size();
 		int numOfConnections = 0;
-		numOfConnections = (int) Math.ceil((channels.size() / limit));
+		numOfConnections = (int) Math.ceil((channels.size() / limit + 1));
 
-		if (channels.size() < 50)
+		if (channels.size() <= limit)
 			numOfConnections = 1;
 
 		for (int i = 0; i < numOfConnections; i++) {
-			TwitchIRCClient newClient = new TwitchIRCClient();
-			newClient.setVerbose(verbose);
-			newClient.connectToTwitch(username, password);
-			TwitchIRCManager.addClient(newClient);
-		}
-		for (int i = 0; i < numOfConnections; i++) {
+			setupClient(username, password, verbose);
 			int channelNum = 0;
 			for (int j = 0; j < channels.size(); j++) {
 				channelNum++;
 				getClients().get(i).addChannelWithConnect(channels.get(j));
-				if (channelNum == limit)
+				channels.remove(j);
+				if (channelNum == limit) {
 					break;
+				}
 			}
+		}
+		System.out.println(getClients().size() + " client(s) have been created! For " + channelsSize + " channel(s)! With a limit of " + limit + " per connection!");
+	}
+
+	public static TwitchIRCClient setupClient(String username, String password, boolean verbose) throws IOException {
+		TwitchIRCClient newClient = new TwitchIRCClient();
+		newClient.setVerbose(verbose);
+		newClient.connectToTwitch(username, password);
+		TwitchIRCManager.addClient(newClient);
+		return newClient;
+	}
+
+	public static void addChannel(String channelName, int limit, String username, String password, boolean verbose) throws IOException {
+		boolean found = false;
+		for (TwitchIRCClient client : clients) {
+			if (client.getChannelsList().size() < limit) {
+				found = true;
+				client.addChannelWithConnect(channelName);
+				System.out.println("Added channel " + channelName + " to a client");
+				return;
+			}
+		}
+		if (!found) {
+			setupClient(username, password, verbose);
 		}
 	}
 
-	public static void addChannel(String channelName, int limit) {
-		for(TwitchIRCClient client : clients) {
-			if(client.getChannelsList().size() < limit) {
-				client.addChannelWithConnect(channelName);
-				return;
-			}
-		}
-	}
-	
-	public static void removeChannel(String channelName, int limit) {
-		for(TwitchIRCClient client : clients) {
-			if(client.getChannelsList().size() < limit) {
+	public static void removeChannel(String channelName) {
+		for (TwitchIRCClient client : clients) {
+			if (client.getChannelsList().contains(channelName)) {
 				client.removeChannelWithDisconnect(channelName);
-				return;
+				System.out.println("Removed channel " + channelName + " from a client");
+				if (client.getChannelsList().size() == 0) {
+					disconnectClient(client);
+					System.out.println("Closed connection due to having no channels for the connection!");
+				}
 			}
 		}
 	}
