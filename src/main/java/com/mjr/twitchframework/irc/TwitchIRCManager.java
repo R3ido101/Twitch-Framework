@@ -7,6 +7,8 @@ import java.util.List;
 import com.mjr.twitchframework.Event;
 
 public class TwitchIRCManager {
+	
+	public static int numberOfClients = 0;
 
 	private static List<TwitchIRCClient> clients = new ArrayList<TwitchIRCClient>();
 	private static List<Event> listeners = new ArrayList<Event>();
@@ -19,11 +21,16 @@ public class TwitchIRCManager {
 		return clients.get(index);
 	}
 
-	public static void sendMessageByChannelName(String channelName, String message) {
+	public static TwitchIRCClient getClientByChannelName(String channelName) {
 		for (TwitchIRCClient client : getClients()) {
 			if (client.getChannelsList().contains(channelName))
-				client.sendMessage("#" + channelName, message);
+				return client;
 		}
+		return null;
+	}
+
+	public static void sendMessageByChannelName(String channelName, String message) {
+		getClientByChannelName(channelName).sendMessage("#" + channelName, message);
 	}
 
 	public static void setClients(List<TwitchIRCClient> clients) {
@@ -75,7 +82,7 @@ public class TwitchIRCManager {
 	}
 
 	public static TwitchIRCClient setupClient(String username, String password, boolean verbose) throws IOException {
-		TwitchIRCClient newClient = new TwitchIRCClient();
+		TwitchIRCClient newClient = new TwitchIRCClient(numberOfClients++);
 		newClient.setVerbose(verbose);
 		newClient.connectToTwitch(username, password);
 		TwitchIRCManager.addClient(newClient);
