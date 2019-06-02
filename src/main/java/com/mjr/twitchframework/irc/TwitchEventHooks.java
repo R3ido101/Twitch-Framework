@@ -57,9 +57,10 @@ public class TwitchEventHooks {
 	public static void triggerOnUnknownEvent(IRCEventType type, final String rawLine) {
 		for (Event event : TwitchIRCManager.getEventListeners()) {
 			if (type.getName().equalsIgnoreCase(event.typeIRC.getName())) {
-				String channel = rawLine.substring(rawLine.indexOf("tmi.twitch.tv") + 18);
+				String channel = rawLine.substring(rawLine.indexOf("tmi.twitch.tv") + 13);
 	        	channel = channel.substring(channel.indexOf("#") + 1);
-	        	channel = channel.substring(0, channel.indexOf(" :"));
+	        	if(channel.contains(":"))
+	        		channel = channel.substring(0, channel.indexOf(" :"));
 				((IRCUnknownEvent) event).onEvent(rawLine, channel);
 			}
 		}
