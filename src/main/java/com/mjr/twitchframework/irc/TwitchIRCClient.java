@@ -70,7 +70,7 @@ public class TwitchIRCClient extends PircBot {
 
 	@Override
 	protected void onUnknown(String line) {
-		if (line.contains("UNKNOWN"))
+		if (line.contains("RECONNECT"))
 			TwitchEventHooks.triggerOnDisconnectEvent(IRCEventType.DISCONNECT, this);
 		else
 			TwitchEventHooks.triggerOnUnknownEvent(IRCEventType.UNKNOWN, line);
