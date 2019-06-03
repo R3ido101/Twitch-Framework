@@ -3,6 +3,8 @@ package com.mjr.twitchframework.irc;
 import com.mjr.twitchframework.Event;
 import com.mjr.twitchframework.Event.IRCEventType;
 import com.mjr.twitchframework.irc.events.IRCDisconnectEvent;
+import com.mjr.twitchframework.irc.events.IRCErrorEvent;
+import com.mjr.twitchframework.irc.events.IRCInfoEvent;
 import com.mjr.twitchframework.irc.events.IRCJoinEvent;
 import com.mjr.twitchframework.irc.events.IRCMessageEvent;
 import com.mjr.twitchframework.irc.events.IRCMessageExtraEvent;
@@ -70,6 +72,20 @@ public class TwitchEventHooks {
 		for (Event event : TwitchIRCManager.getEventListeners()) {
 			if (type.getName().equalsIgnoreCase(event.typeIRC.getName()))
 				((IRCDisconnectEvent) event).onEvent(client);
+		}
+	}
+	
+	public static void triggerOnErrorEvent(IRCEventType type, String errorMessage, Throwable error) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (type.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCErrorEvent) event).onEvent(errorMessage, error);
+		}
+	}
+	
+	public static void triggerOnInfoEvent(IRCEventType type, String message) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (type.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCInfoEvent) event).onEvent(message);
 		}
 	}
 }

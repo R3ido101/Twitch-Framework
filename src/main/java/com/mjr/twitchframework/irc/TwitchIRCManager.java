@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mjr.twitchframework.Event;
+import com.mjr.twitchframework.Event.IRCEventType;
 
 public class TwitchIRCManager {
-	
+
 	public static int numberOfClients = 0;
 
 	private static List<TwitchIRCClient> clients = new ArrayList<TwitchIRCClient>();
@@ -59,61 +60,78 @@ public class TwitchIRCManager {
 	}
 
 	public static void setupClients(List<String> channels, String username, String password, int limit, boolean verbose) throws IOException {
-		int channelsSize = channels.size();
-		int numOfConnections = 0;
-		numOfConnections = (int) Math.ceil((channels.size() / limit + 1));
+		try {
+			int channelsSize = channels.size();
+			int numOfConnections = 0;
+			numOfConnections = (int) Math.ceil((channels.size() / limit + 1));
 
-		if (channels.size() <= limit)
-			numOfConnections = 1;
+			if (channels.size() <= limit)
+				numOfConnections = 1;
 
-		for (int i = 0; i < numOfConnections; i++) {
-			setupClient(username, password, verbose);
-			int channelNum = 0;
-			for (int j = 0; j < channels.size(); j++) {
-				channelNum++;
-				getClients().get(i).addChannelWithConnect(channels.get(j));
-				channels.remove(j);
-				if (channelNum == limit) {
-					break;
+			for (int i = 0; i < numOfConnections; i++) {
+				setupClient(username, password, verbose);
+				int channelNum = 0;
+				for (int j = 0; j < channels.size(); j++) {
+					channelNum++;
+					getClients().get(i).addChannelWithConnect(channels.get(j));
+					channels.remove(j);
+					if (channelNum == limit) {
+						break;
+					}
 				}
 			}
+			TwitchEventHooks.triggerOnInfoEvent(IRCEventType.INFOMSG, getClients().size() + " client(s) have been created! For " + channelsSize + " channel(s)! With a limit of " + limit + " per connection!");
+		} catch (Exception e) {
+			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
 		}
-		System.out.println(getClients().size() + " client(s) have been created! For " + channelsSize + " channel(s)! With a limit of " + limit + " per connection!");
 	}
 
 	public static TwitchIRCClient setupClient(String username, String password, boolean verbose) throws IOException {
-		TwitchIRCClient newClient = new TwitchIRCClient(numberOfClients++);
-		newClient.setVerbose(verbose);
-		newClient.connectToTwitch(username, password);
-		TwitchIRCManager.addClient(newClient);
-		return newClient;
+		try {
+			TwitchIRCClient newClient = new TwitchIRCClient(numberOfClients++);
+			newClient.setVerbose(verbose);
+			newClient.connectToTwitch(username, password);
+			TwitchIRCManager.addClient(newClient);
+			return newClient;
+		} catch (Exception e) {
+			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
+		}
+		return null;
 	}
 
 	public static void addChannel(String channelName, int limit, String username, String password, boolean verbose) throws IOException {
-		boolean found = false;
-		for (TwitchIRCClient client : clients) {
-			if (client.getChannelsList().size() < limit) {
-				found = true;
-				client.addChannelWithConnect(channelName);
-				System.out.println("Added channel " + channelName + " to a client");
-				return;
+		try {
+			boolean found = false;
+			for (TwitchIRCClient client : clients) {
+				if (client.getChannelsList().size() < limit) {
+					found = true;
+					client.addChannelWithConnect(channelName);
+					TwitchEventHooks.triggerOnInfoEvent(IRCEventType.INFOMSG, "Added channel " + channelName + " to a client");
+					return;
+				}
 			}
-		}
-		if (!found) {
-			setupClient(username, password, verbose);
+			if (!found) {
+				setupClient(username, password, verbose);
+			}
+		} catch (Exception e) {
+			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
 		}
 	}
 
 	public static void removeChannel(String channelName) {
-		for (TwitchIRCClient client : clients) {
-			if (client.getChannelsList().contains(channelName)) {
-				client.removeChannelWithDisconnect(channelName);
-				System.out.println("Removed channel " + channelName + " from a client");
-				if (client.getChannelsList().size() == 0) {
-					disconnectClient(client);
-					System.out.println("Closed connection due to having no channels for the connection!");
+		try {
+			for (TwitchIRCClient client : clients) {
+				if (client.getChannelsList().contains(channelName)) {
+					client.removeChannelWithDisconnect(channelName);
+					System.out.println("Removed channel " + channelName + " from a client");
+					if (client.getChannelsList().size() == 0) {
+						disconnectClient(client);
+						TwitchEventHooks.triggerOnInfoEvent(IRCEventType.INFOMSG, "Closed connection due to having no channels for the connection!");
+					}
 				}
 			}
+		} catch (Exception e) {
+			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
 		}
 	}
 }
