@@ -24,8 +24,8 @@ public class Event {
 	}
 
 	public enum IRCEventType {
-		MESSAGE("Message"), MESSAGEEXTRA("MessageExtra"), NOTICE("Notice"), PRIVATEMESSAGE("PrivateMessage"), UNKNOWN("Unknown"), JOIN("Join"), PART("Part"), CONNECT("Connect"), DISCONNECT("Disconnect"), ERRORMSG(
-				"ErrorMessage"), INFOMSG("InfoMessage");
+		MESSAGE("Message"), MESSAGEEXTRA("MessageExtra"), NOTICE("Notice"), PRIVATEMESSAGE("PrivateMessage"), UNKNOWN("Unknown"), JOIN("Join"), PART("Part"), CONNECT("Connect"), DISCONNECT("Disconnect"), ERRORMSG("ErrorMessage"), INFOMSG(
+				"InfoMessage");
 
 		public final String name;
 

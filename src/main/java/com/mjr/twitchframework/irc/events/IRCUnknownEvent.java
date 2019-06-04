@@ -3,7 +3,7 @@ package com.mjr.twitchframework.irc.events;
 import com.mjr.twitchframework.Event;
 
 public class IRCUnknownEvent extends Event {
-	
+
 	public final String rawLine;
 	public final String channel;
 
@@ -18,8 +18,8 @@ public class IRCUnknownEvent extends Event {
 		this.rawLine = null;
 		this.channel = null;
 	}
-	
+
 	public void onEvent(IRCUnknownEvent event) {
-		
+
 	}
 }

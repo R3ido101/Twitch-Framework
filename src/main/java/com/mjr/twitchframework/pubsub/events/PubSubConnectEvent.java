@@ -5,7 +5,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import com.mjr.twitchframework.Event;
 
 public class PubSubConnectEvent extends Event {
-	
+
 	public final ServerHandshake serverHandshake;
 
 	public PubSubConnectEvent(ServerHandshake serverHandshake) {
@@ -17,8 +17,8 @@ public class PubSubConnectEvent extends Event {
 		super(PubSubEventType.CONNECT);
 		this.serverHandshake = null;
 	}
-	
+
 	public void onEvent(PubSubConnectEvent event) {
-		
+
 	}
 }

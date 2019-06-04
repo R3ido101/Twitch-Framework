@@ -3,7 +3,7 @@ package com.mjr.twitchframework.pubsub.events;
 import com.mjr.twitchframework.Event;
 
 public class PubSubMessageEvent extends Event {
-	
+
 	public final String message;
 
 	public PubSubMessageEvent(String message) {
@@ -15,8 +15,8 @@ public class PubSubMessageEvent extends Event {
 		super(PubSubEventType.MESSAGE);
 		this.message = null;
 	}
-	
+
 	public void onEvent(PubSubMessageEvent event) {
-		
+
 	}
 }

@@ -3,7 +3,7 @@ package com.mjr.twitchframework.pubsub.events;
 import com.mjr.twitchframework.Event;
 
 public class PubSubErrorEvent extends Event {
-	
+
 	public final Exception e;
 
 	public PubSubErrorEvent(Exception e) {
@@ -15,8 +15,8 @@ public class PubSubErrorEvent extends Event {
 		super(PubSubEventType.ERROR);
 		this.e = null;
 	}
-	
+
 	public void onEvent(PubSubErrorEvent event) {
-		
+
 	}
 }

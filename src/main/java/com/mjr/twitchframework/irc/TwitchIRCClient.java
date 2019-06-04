@@ -21,20 +21,20 @@ public class TwitchIRCClient extends PircBot {
 		if (!username.equals("") && !password.equals("") && !(username == null) && !(password == null)) {
 			this.setName(username);
 			try {
-				TwitchEventHooks.triggerOnInfoEvent("Connecting to Twitch! Client ID: " + ID);
+				TwitchIRCEventHooks.triggerOnInfoEvent("Connecting to Twitch! Client ID: " + ID);
 				this.connect("irc.chat.twitch.tv", 6667, password);
 				this.sendRawLine("CAP REQ :twitch.tv/commands");
 				this.sendRawLine("CAP REQ :twitch.tv/membership");
 				this.sendRawLine("CAP REQ :twitch.tv/tags");
-				TwitchEventHooks.triggerOnInfoEvent("Connected to Twitch! Client ID: " + ID);
+				TwitchIRCEventHooks.triggerOnInfoEvent("Connected to Twitch! Client ID: " + ID);
 			} catch (Exception e) {
 				e.printStackTrace();
-				TwitchEventHooks.triggerOnErrorEvent("Failed to connect to Twitch! Check your internet connection! Client ID: " + ID, e);
+				TwitchIRCEventHooks.triggerOnErrorEvent("Failed to connect to Twitch! Check your internet connection! Client ID: " + ID, e);
 				return false;
 			}
 			return true;
 		} else {
-			TwitchEventHooks.triggerOnErrorEvent("Error! No Login details were set! Go to settings to enter them! \n Use the Reconnect button when done! Client ID: " + ID, null);
+			TwitchIRCEventHooks.triggerOnErrorEvent("Error! No Login details were set! Go to settings to enter them! \n Use the Reconnect button when done! Client ID: " + ID, null);
 		}
 		return false;
 	}
@@ -47,22 +47,22 @@ public class TwitchIRCClient extends PircBot {
 
 	@Override
 	public void onMessage(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {
-		TwitchEventHooks.triggerOnMessageEvent(channel, sender, login, hostname, userID, subscriber, message);
+		TwitchIRCEventHooks.triggerOnMessageEvent(channel, sender, login, hostname, userID, subscriber, message);
 	}
 
 	@Override
 	public void onMessageExtra(final String line, final String channel, final String sender, final String login, final String hostname, final String message) {
-		TwitchEventHooks.triggerOnMessageExtraEvent(line, channel, sender, login, hostname, message);
+		TwitchIRCEventHooks.triggerOnMessageExtraEvent(line, channel, sender, login, hostname, message);
 	}
 
 	@Override
 	protected void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
-		TwitchEventHooks.triggerOnNoticeEvent(sourceNick, sourceLogin, sourceHostname, target, notice);
+		TwitchIRCEventHooks.triggerOnNoticeEvent(sourceNick, sourceLogin, sourceHostname, target, notice);
 	}
 
 	@Override
 	public void onPrivateMessage(String sender, String login, String hostname, String channel, String message) {
-		TwitchEventHooks.triggerOnPrivateMessageEvent(sender, login, hostname, channel, message);
+		TwitchIRCEventHooks.triggerOnPrivateMessageEvent(sender, login, hostname, channel, message);
 	}
 
 	@Override
@@ -70,31 +70,31 @@ public class TwitchIRCClient extends PircBot {
 		if (line.contains("RECONNECT"))
 			this.onDisconnect();
 		else
-			TwitchEventHooks.triggerOnUnknownEvent(line);
+			TwitchIRCEventHooks.triggerOnUnknownEvent(line);
 	}
 
 	@Override
 	protected void onJoin(String channel, String sender, String login, String hostname) {
-		TwitchEventHooks.triggerOnJoinEvent(channel, sender, login, hostname);
+		TwitchIRCEventHooks.triggerOnJoinEvent(channel, sender, login, hostname);
 	}
 
 	@Override
 	protected void onPart(String channel, String sender, String login, String hostname) {
-		TwitchEventHooks.triggerOnPartEvent(channel, sender, login, hostname);
+		TwitchIRCEventHooks.triggerOnPartEvent(channel, sender, login, hostname);
 	}
 
 	@Override
 	protected void onDisconnect() {
-		TwitchEventHooks.triggerOnDisconnectEvent(this);
+		TwitchIRCEventHooks.triggerOnDisconnectEvent(this);
 		try {
 			do {
-				TwitchEventHooks.triggerOnInfoEvent("Trying to reconnect client, Client ID: " + ID);
+				TwitchIRCEventHooks.triggerOnInfoEvent("Trying to reconnect client, Client ID: " + ID);
 				this.disconnect();
 				this.reconnect();
 			} while (this.isConnected() == false);
 		} catch (IOException | IrcException e) {
 			e.printStackTrace();
-			TwitchEventHooks.triggerOnErrorEvent("Error processing onDisconnectEvent for an client, Client ID: " + ID, e);
+			TwitchIRCEventHooks.triggerOnErrorEvent("Error processing onDisconnectEvent for an client, Client ID: " + ID, e);
 		}
 	}
 

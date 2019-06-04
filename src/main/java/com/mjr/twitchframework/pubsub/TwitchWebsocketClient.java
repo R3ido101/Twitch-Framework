@@ -60,7 +60,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		if (this.isShowDebugMessages())
 			System.out.println(new java.util.Date() + " [onOpen] " + serverHandshake.getHttpStatus() + " | " + serverHandshake.getHttpStatusMessage());
 		System.out.println("CONNECTION OPENED!");
-		TwitchPubSubManager.triggerConnectEvent(serverHandshake);
+		TwitchPubSubEventHooks.triggerConnectEvent(serverHandshake);
 		sendListenRequests();
 	}
 
@@ -78,7 +78,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		default:
 			if (this.isShowDebugMessages())
 				System.out.println(new java.util.Date() + " [onMessage] " + message);
-			TwitchPubSubManager.triggerMessageEvent(message);
+			TwitchPubSubEventHooks.triggerMessageEvent(message);
 			break;
 		}
 	}
@@ -89,14 +89,14 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 			System.out.println(new java.util.Date() + " [onClose] " + message + " | " + codes + " | " + byRemoteHost);
 		this.close();
 		System.out.println("CONNECTION CLOSED!");
-		TwitchPubSubManager.triggerDisconnectEvent(codes, message, byRemoteHost);
+		TwitchPubSubEventHooks.triggerDisconnectEvent(codes, message, byRemoteHost);
 
 	}
 
 	@Override
 	public void onError(Exception e) {
 		System.out.println("[onError] " + e.getMessage());
-		TwitchPubSubManager.triggerErrorEvent(e);
+		TwitchPubSubEventHooks.triggerErrorEvent(e);
 	}
 
 	public HashMap<String, List<String>> getRequests() {
