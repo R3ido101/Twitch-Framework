@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.mjr.twitchframework.Event;
-import com.mjr.twitchframework.Event.IRCEventType;
 
 public class TwitchIRCManager {
 
@@ -80,9 +79,9 @@ public class TwitchIRCManager {
 					}
 				}
 			}
-			TwitchEventHooks.triggerOnInfoEvent(IRCEventType.INFOMSG, getClients().size() + " client(s) have been created! For " + channelsSize + " channel(s)! With a limit of " + limit + " per connection!");
+			TwitchEventHooks.triggerOnInfoEvent(getClients().size() + " client(s) have been created! For " + channelsSize + " channel(s)! With a limit of " + limit + " per connection!");
 		} catch (Exception e) {
-			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
+			TwitchEventHooks.triggerOnErrorEvent(null, e);
 		}
 	}
 
@@ -94,7 +93,7 @@ public class TwitchIRCManager {
 			TwitchIRCManager.addClient(newClient);
 			return newClient;
 		} catch (Exception e) {
-			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
+			TwitchEventHooks.triggerOnErrorEvent(null, e);
 		}
 		return null;
 	}
@@ -106,7 +105,7 @@ public class TwitchIRCManager {
 				if (client.getChannelsList().size() < limit) {
 					found = true;
 					client.addChannelWithConnect(channelName);
-					TwitchEventHooks.triggerOnInfoEvent(IRCEventType.INFOMSG, "Added channel " + channelName + " to a client");
+					TwitchEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a client");
 					return;
 				}
 			}
@@ -114,7 +113,7 @@ public class TwitchIRCManager {
 				setupClient(username, password, verbose);
 			}
 		} catch (Exception e) {
-			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
+			TwitchEventHooks.triggerOnErrorEvent(null, e);
 		}
 	}
 
@@ -126,12 +125,12 @@ public class TwitchIRCManager {
 					System.out.println("Removed channel " + channelName + " from a client");
 					if (client.getChannelsList().size() == 0) {
 						disconnectClient(client);
-						TwitchEventHooks.triggerOnInfoEvent(IRCEventType.INFOMSG, "Closed connection due to having no channels for the connection!");
+						TwitchEventHooks.triggerOnInfoEvent("Closed connection due to having no channels for the connection!");
 					}
 				}
 			}
 		} catch (Exception e) {
-			TwitchEventHooks.triggerOnErrorEvent(IRCEventType.ERRORMSG, null, e);
+			TwitchEventHooks.triggerOnErrorEvent(null, e);
 		}
 	}
 }
