@@ -3,8 +3,12 @@ package com.mjr.twitchframework.irc.events;
 import com.mjr.twitchframework.Event;
 
 public class IRCNoticeEvent extends Event {
-	
-	public final String sourceNick; public final String sourceLogin; public final String sourceHostname; public final String target; public final String notice;
+
+	public final String sourceNick;
+	public final String sourceLogin;
+	public final String sourceHostname;
+	public final String target;
+	public final String notice;
 
 	public IRCNoticeEvent(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice) {
 		super(IRCEventType.NOTICE);
@@ -23,8 +27,8 @@ public class IRCNoticeEvent extends Event {
 		this.target = null;
 		this.notice = null;
 	}
-	
+
 	public void onEvent(IRCNoticeEvent event) {
-		
+
 	}
 }

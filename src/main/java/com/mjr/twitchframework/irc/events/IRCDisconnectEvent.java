@@ -5,7 +5,7 @@ import com.mjr.twitchframework.irc.TwitchIRCClient;
 
 public class IRCDisconnectEvent extends Event {
 	
-	public TwitchIRCClient client;
+	public final TwitchIRCClient client;
 
 	public IRCDisconnectEvent(TwitchIRCClient client) {
 		super(IRCEventType.DISCONNECT);
@@ -14,6 +14,7 @@ public class IRCDisconnectEvent extends Event {
 
 	public IRCDisconnectEvent() {
 		super(IRCEventType.DISCONNECT);
+		this.client = null;
 	}
 	
 	public void onEvent(IRCDisconnectEvent event) {

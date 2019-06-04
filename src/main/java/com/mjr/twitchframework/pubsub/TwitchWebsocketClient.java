@@ -12,14 +12,13 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mjr.twitchframework.BasicWebSocketClient;
-import com.mjr.twitchframework.Event.PubSubEventType;
 
 public class TwitchWebsocketClient extends BasicWebSocketClient {
 
 	public static Gson gson = new Gson();
 	private HashMap<String, List<String>> requests = new HashMap<String, List<String>>();
 	private boolean showDebugMessages = false;
-	
+
 	public TwitchWebsocketClient(HashMap<String, List<String>> requests, boolean debug) throws URISyntaxException {
 		super(new URI("wss://pubsub-edge.twitch.tv"));
 		this.requests = requests;
@@ -61,7 +60,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		if (this.isShowDebugMessages())
 			System.out.println(new java.util.Date() + " [onOpen] " + serverHandshake.getHttpStatus() + " | " + serverHandshake.getHttpStatusMessage());
 		System.out.println("CONNECTION OPENED!");
-		TwitchPubSubManager.triggerEvent(PubSubEventType.CONNECT, serverHandshake);
+		TwitchPubSubManager.triggerConnectEvent(serverHandshake);
 		sendListenRequests();
 	}
 
@@ -79,7 +78,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		default:
 			if (this.isShowDebugMessages())
 				System.out.println(new java.util.Date() + " [onMessage] " + message);
-			TwitchPubSubManager.triggerEvent(PubSubEventType.MESSAGE, message);
+			TwitchPubSubManager.triggerMessageEvent(message);
 			break;
 		}
 	}
@@ -95,7 +94,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 	@Override
 	public void onError(Exception e) {
 		System.out.println("[onError] " + e.getMessage());
-		TwitchPubSubManager.triggerEvent(PubSubEventType.ERROR, e);
+		TwitchPubSubManager.triggerErrorEvent(e);
 	}
 
 	public HashMap<String, List<String>> getRequests() {

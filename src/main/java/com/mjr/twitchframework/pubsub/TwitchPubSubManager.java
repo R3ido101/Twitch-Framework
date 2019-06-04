@@ -32,24 +32,24 @@ public class TwitchPubSubManager {
 		listeners.add(event);
 	}
 
-	public static void triggerEvent(PubSubEventType type, String message) {
+	public static void triggerMessageEvent(String message) {
 		for (Event event : listeners) {
-			if (type.getName().equalsIgnoreCase(event.type.getName()))
-				((PubSubMessageEvent) event).onEvent(message);
+			if (PubSubEventType.MESSAGE.getName().equalsIgnoreCase(event.type.getName()))
+				((PubSubMessageEvent) event).onEvent(new PubSubMessageEvent(message));
 		}
 	}
 
-	public static void triggerEvent(PubSubEventType type, Exception error) {
+	public static void triggerErrorEvent(Exception error) {
 		for (Event event : listeners) {
-			if (type.getName().equalsIgnoreCase(event.type.getName()))
-				((PubSubErrorEvent) event).onEvent(error);
+			if (PubSubEventType.ERROR.getName().equalsIgnoreCase(event.type.getName()))
+				((PubSubErrorEvent) event).onEvent(new PubSubErrorEvent(error));
 		}
 	}
 
-	public static void triggerEvent(PubSubEventType type, ServerHandshake data) {
+	public static void triggerConnectEvent(ServerHandshake data) {
 		for (Event event : listeners) {
-			if (type.getName().equalsIgnoreCase(event.type.getName()))
-				((PubSubConnectEvent) event).onEvent(data);
+			if (PubSubEventType.CONNECT.getName().equalsIgnoreCase(event.type.getName()))
+				((PubSubConnectEvent) event).onEvent(new PubSubConnectEvent(data));
 		}
 	}
 

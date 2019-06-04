@@ -4,8 +4,8 @@ import com.mjr.twitchframework.Event;
 
 public class IRCErrorEvent extends Event {
 
-	public String errorMessage;
-	public Throwable error;
+	public final String errorMessage;
+	public final Throwable error;
 
 	public IRCErrorEvent(String errorMessage, Throwable error) {
 		super(IRCEventType.ERRORMSG);
@@ -15,6 +15,8 @@ public class IRCErrorEvent extends Event {
 
 	public IRCErrorEvent() {
 		super(IRCEventType.ERRORMSG);
+		this.errorMessage = null;
+		this.error = null;
 	}
 
 	public void onEvent(IRCErrorEvent event) {
