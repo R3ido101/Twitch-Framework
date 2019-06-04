@@ -84,11 +84,13 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 	}
 
 	@Override
-	public void onClose(int i, String s, boolean b) {
+	public void onClose(int codes, String message, boolean byRemoteHost) {
 		if (this.isShowDebugMessages())
-			System.out.println(new java.util.Date() + " [onClose] " + s + " | " + i + " | " + b);
+			System.out.println(new java.util.Date() + " [onClose] " + message + " | " + codes + " | " + byRemoteHost);
 		this.close();
 		System.out.println("CONNECTION CLOSED!");
+		TwitchPubSubManager.triggerDisconnectEvent(codes, message, byRemoteHost);
+
 	}
 
 	@Override

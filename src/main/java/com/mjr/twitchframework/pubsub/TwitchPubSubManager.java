@@ -8,6 +8,7 @@ import org.java_websocket.handshake.ServerHandshake;
 import com.mjr.twitchframework.Event;
 import com.mjr.twitchframework.Event.PubSubEventType;
 import com.mjr.twitchframework.pubsub.events.PubSubConnectEvent;
+import com.mjr.twitchframework.pubsub.events.PubSubDisconnectEvent;
 import com.mjr.twitchframework.pubsub.events.PubSubErrorEvent;
 import com.mjr.twitchframework.pubsub.events.PubSubMessageEvent;
 
@@ -50,6 +51,13 @@ public class TwitchPubSubManager {
 		for (Event event : listeners) {
 			if (PubSubEventType.CONNECT.getName().equalsIgnoreCase(event.type.getName()))
 				((PubSubConnectEvent) event).onEvent(new PubSubConnectEvent(data));
+		}
+	}
+
+	public static void triggerDisconnectEvent(int codes, String message, boolean byRemoteHost) {
+		for (Event event : listeners) {
+			if (PubSubEventType.DISCONNECT.getName().equalsIgnoreCase(event.type.getName()))
+				((PubSubDisconnectEvent) event).onEvent(new PubSubDisconnectEvent(codes, message, byRemoteHost));
 		}
 	}
 
