@@ -63,7 +63,7 @@ public class TwitchEventHooks {
 				channel = channel.substring(channel.indexOf("#") + 1);
 				if (channel.contains(":"))
 					channel = channel.substring(0, channel.indexOf(" :"));
-				((IRCUnknownEvent) event).onEvent(rawLine, channel);
+				((IRCUnknownEvent) event).onEvent(new IRCUnknownEvent(rawLine, channel));
 			}
 		}
 	}

@@ -19,7 +19,7 @@ public class IRCUnknownEvent extends Event {
 		this.channel = null;
 	}
 	
-	public void onEvent(final String rawLine, final String channel) {
+	public void onEvent(IRCUnknownEvent event) {
 		
 	}
 }
