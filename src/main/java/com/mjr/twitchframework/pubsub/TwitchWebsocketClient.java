@@ -69,7 +69,12 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		JsonObject jsonObject = new JsonParser().parse(message).getAsJsonObject();
 		switch (jsonObject.get("type").getAsString()) {
 		case "RECONNECT":
-			this.reconnect();
+			try {
+				this.closeBlocking();
+			} catch (InterruptedException e) {
+				onError(e);
+			}
+			this.connect();
 			break;
 		case "PONG":
 			if (this.isShowDebugMessages())
