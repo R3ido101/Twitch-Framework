@@ -23,14 +23,14 @@ public class TwitchFramework {
 			e.printStackTrace();
 		}
 
-		TwitchPubSubManager.registerEventHandler(new PubSubMessageEvent() {
+		TwitchPubSubManager.registerEventHandler(TwitchPubSubManager.getClients().get(0), new PubSubMessageEvent() {
 			@Override
 			public void onEvent(PubSubMessageEvent event) {
 				System.out.println("Event Triggered: " + event.message);
 			}
 		});
 
-		TwitchPubSubManager.registerEventHandler(new PubSubConnectEvent() {
+		TwitchPubSubManager.registerEventHandler(TwitchPubSubManager.getClients().get(0), new PubSubConnectEvent() {
 			@Override
 			public void onEvent(PubSubConnectEvent event) {
 				System.out.println("Event Triggered: " + event.serverHandshake.getHttpStatus());
