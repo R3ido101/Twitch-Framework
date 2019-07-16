@@ -1,5 +1,5 @@
 
-package com.mjr.twitchframework.irc.events.twitch;
+package com.mjr.twitchframework.irc.events.special;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import com.mjr.twitchframework.Event;
 
-public class IRCMessageEventBase extends Event {
+public class IRCSpecialEventBase extends Event {
 
 	public enum SubscriptionType {
 		Tier1(1000, "Tier 1"), Tier2(2000, "Tier 2"), Tier3(3000, "Tier 2");
@@ -49,7 +49,7 @@ public class IRCMessageEventBase extends Event {
 	public String command;
 	public Map<String, String> tags;
 
-	public IRCMessageEventBase(String rawLine, IRCEventType eventType) {
+	public IRCSpecialEventBase(String rawLine, IRCEventType eventType) {
 		super(eventType);
 		if (rawLine != null)
 			this.parseRawMessage(rawLine);

@@ -1,6 +1,6 @@
-package com.mjr.twitchframework.irc.events.twitch;
+package com.mjr.twitchframework.irc.events.special;
 
-public class IRCSubscribeEvent extends IRCMessageEventBase {
+public class IRCSubscribeEvent extends IRCSpecialEventBase {
 
 	/**
 	 * Display name of subscribing user

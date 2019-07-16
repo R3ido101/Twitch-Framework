@@ -1,11 +1,11 @@
-package com.mjr.twitchframework.irc.events.twitch;
+package com.mjr.twitchframework.irc.events.special;
 
-public class IRCReSubscribeEvent extends IRCMessageEventBase {
+public class IRCReSubscribeEvent extends IRCSpecialEventBase {
 
 	public IRCReSubscribeEvent(String rawLine) {
 		super(rawLine, IRCEventType.RESUBSCRIBE);
 	}
-	
+
 	public IRCReSubscribeEvent() {
 		super(null, IRCEventType.RESUBSCRIBE);
 	}

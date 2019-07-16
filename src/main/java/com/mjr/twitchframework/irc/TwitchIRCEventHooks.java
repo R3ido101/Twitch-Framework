@@ -12,11 +12,11 @@ import com.mjr.twitchframework.irc.events.IRCNoticeEvent;
 import com.mjr.twitchframework.irc.events.IRCPartEvent;
 import com.mjr.twitchframework.irc.events.IRCPrivateMessageEvent;
 import com.mjr.twitchframework.irc.events.IRCUnknownEvent;
-import com.mjr.twitchframework.irc.events.twitch.IRCBitsEvent;
-import com.mjr.twitchframework.irc.events.twitch.IRCGiftSubEvent;
-import com.mjr.twitchframework.irc.events.twitch.IRCReSubscribeEvent;
-import com.mjr.twitchframework.irc.events.twitch.IRCSubGiftingEvent;
-import com.mjr.twitchframework.irc.events.twitch.IRCSubscribeEvent;
+import com.mjr.twitchframework.irc.events.special.IRCBitsEvent;
+import com.mjr.twitchframework.irc.events.special.IRCGiftSubEvent;
+import com.mjr.twitchframework.irc.events.special.IRCReSubscribeEvent;
+import com.mjr.twitchframework.irc.events.special.IRCSubGiftingEvent;
+import com.mjr.twitchframework.irc.events.special.IRCSubscribeEvent;
 
 public class TwitchIRCEventHooks {
 	public static void triggerOnMessageEvent(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {

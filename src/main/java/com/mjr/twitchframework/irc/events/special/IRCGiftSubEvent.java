@@ -1,6 +1,6 @@
-package com.mjr.twitchframework.irc.events.twitch;
+package com.mjr.twitchframework.irc.events.special;
 
-public class IRCGiftSubEvent extends IRCMessageEventBase {
+public class IRCGiftSubEvent extends IRCSpecialEventBase {
 
 	public boolean isAnonymousGift;
 
