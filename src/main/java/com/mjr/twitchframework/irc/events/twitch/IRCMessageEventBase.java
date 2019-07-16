@@ -10,16 +10,48 @@ import java.util.regex.Pattern;
 import com.mjr.twitchframework.Event;
 
 public class IRCMessageEventBase extends Event {
+
+	public enum SubscriptionType {
+		Tier1(1000, "Tier 1"), Tier2(2000, "Tier 2"), Tier3(3000, "Tier 2");
+
+		public final int value;
+		public final String name;
+
+		SubscriptionType(int value, String name) {
+			this.value = value;
+			this.name = name;
+		}
+
+		public int getRawValue() {
+			return value;
+		}
+
+		public String getDisplayName() {
+			return name;
+		}
+
+		public int getTier() {
+			return value / 1000;
+		}
+
+		public static SubscriptionType getTypeByValue(int value) {
+			for (SubscriptionType type : SubscriptionType.values())
+				if (type.getRawValue() == value)
+					return type;
+			return null;
+		}
+	}
+
 	private static Pattern pattern = Pattern.compile("^(?:@(?<tags>.+?) )?(?<clientName>.+?)(?: (?<command>[A-Z0-9]+) )(?:#(?<channel>.*?) ?)?(?<payload>[:\\-\\+](?<message>.+))?$");
 
 	public String message;
 	public String channelName;
 	public String command;
 	public Map<String, String> tags;
-	
+
 	public IRCMessageEventBase(String rawLine, IRCEventType eventType) {
 		super(eventType);
-		if(rawLine != null)
+		if (rawLine != null)
 			this.parseRawMessage(rawLine);
 	}
 
