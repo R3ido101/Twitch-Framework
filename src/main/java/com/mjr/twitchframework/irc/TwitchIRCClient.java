@@ -53,6 +53,8 @@ public class TwitchIRCClient extends PircBot {
 	@Override
 	public void onMessageExtra(final String line, final String channel, final String sender, final String login, final String hostname, final String message) {
 		TwitchIRCEventHooks.triggerOnMessageExtraEvent(line, channel, sender, login, hostname, message);
+		if (line.contains("bits="))
+			TwitchIRCEventHooks.triggerOnBitsEvent(line, channel, sender, login, hostname, message);
 	}
 
 	@Override
@@ -69,8 +71,17 @@ public class TwitchIRCClient extends PircBot {
 	protected void onUnknown(String line) {
 		if (line.contains("RECONNECT"))
 			this.onDisconnect();
-		else
+		else {
 			TwitchIRCEventHooks.triggerOnUnknownEvent(line);
+			if (line.contains("msg-id=sub"))
+				TwitchIRCEventHooks.triggerOnSubscribeEvent(line);
+			else if (line.contains("msg-id=resub"))
+				TwitchIRCEventHooks.triggerOnReSubscribeEvent(line);
+			else if ((line.contains("msg-id=subgift") || line.contains("msg-id=anonsubgift")) && line.contains("msg-param-recipient-display-name="))
+				TwitchIRCEventHooks.triggerOnGiftSubEvent(line, line.contains("msg-id=anonsubgift"));
+			else if (line.contains("msg-param-mass-gift-count"))
+				TwitchIRCEventHooks.triggerOnSubGiftingEvent(line);
+		}
 	}
 
 	@Override

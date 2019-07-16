@@ -12,6 +12,11 @@ import com.mjr.twitchframework.irc.events.IRCNoticeEvent;
 import com.mjr.twitchframework.irc.events.IRCPartEvent;
 import com.mjr.twitchframework.irc.events.IRCPrivateMessageEvent;
 import com.mjr.twitchframework.irc.events.IRCUnknownEvent;
+import com.mjr.twitchframework.irc.events.twitch.IRCBitsEvent;
+import com.mjr.twitchframework.irc.events.twitch.IRCGiftSubEvent;
+import com.mjr.twitchframework.irc.events.twitch.IRCReSubscribeEvent;
+import com.mjr.twitchframework.irc.events.twitch.IRCSubGiftingEvent;
+import com.mjr.twitchframework.irc.events.twitch.IRCSubscribeEvent;
 
 public class TwitchIRCEventHooks {
 	public static void triggerOnMessageEvent(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {
@@ -86,6 +91,41 @@ public class TwitchIRCEventHooks {
 		for (Event event : TwitchIRCManager.getEventListeners()) {
 			if (IRCEventType.INFOMSG.getName().equalsIgnoreCase(event.typeIRC.getName()))
 				((IRCInfoEvent) event).onEvent(new IRCInfoEvent(message));
+		}
+	}
+
+	public static void triggerOnBitsEvent(String line, String channel, String sender, String login, String hostname, String message) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (IRCEventType.BITS.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCBitsEvent) event).onEvent(new IRCBitsEvent(line));
+		}
+	}
+
+	public static void triggerOnSubscribeEvent(String line) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (IRCEventType.SUBSCRIBE.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCSubscribeEvent) event).onEvent(new IRCSubscribeEvent(line));
+		}
+	}
+
+	public static void triggerOnReSubscribeEvent(String line) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (IRCEventType.RESUBSCRIBE.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCReSubscribeEvent) event).onEvent(new IRCReSubscribeEvent(line));
+		}
+	}
+
+	public static void triggerOnGiftSubEvent(String line, boolean isAnonymousGift) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (IRCEventType.GIFTSUB.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCGiftSubEvent) event).onEvent(new IRCGiftSubEvent(line, isAnonymousGift));
+		}
+	}
+
+	public static void triggerOnSubGiftingEvent(String line) {
+		for (Event event : TwitchIRCManager.getEventListeners()) {
+			if (IRCEventType.GIFTINGSUB.getName().equalsIgnoreCase(event.typeIRC.getName()))
+				((IRCSubGiftingEvent) event).onEvent(new IRCSubGiftingEvent(line));
 		}
 	}
 }

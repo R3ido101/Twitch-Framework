@@ -4,6 +4,14 @@ public abstract class TwitchBotBase {
 
 	public abstract void onMessage(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message);
 
+	/** Same as onMessage but includes the rawMessage for extra parsing
+	 * @param line
+	 * @param channel
+	 * @param sender
+	 * @param login
+	 * @param hostname
+	 * @param message
+	 */
 	public abstract void onMessageExtra(final String line, final String channel, final String sender, final String login, final String hostname, final String message);
 
 	protected abstract void onNotice(String sourceNick, String sourceLogin, String sourceHostname, String target, String notice);
