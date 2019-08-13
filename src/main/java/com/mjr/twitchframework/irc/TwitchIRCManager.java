@@ -122,7 +122,7 @@ public class TwitchIRCManager {
 			for (TwitchIRCClient client : clients) {
 				if (client.getChannelsList().contains(channelName)) {
 					client.removeChannelWithDisconnect(channelName);
-					System.out.println("Removed channel " + channelName + " from a client");
+					TwitchIRCEventHooks.triggerOnInfoEvent("Removed channel " + channelName + " from a client");
 					if (client.getChannelsList().size() == 0) {
 						disconnectClient(client);
 						TwitchIRCEventHooks.triggerOnInfoEvent("Closed connection due to having no channels for the connection!");
