@@ -119,7 +119,9 @@ public class TwitchIRCManager {
 
 	public static void removeChannel(String channelName) {
 		try {
-			for (TwitchIRCClient client : clients) {
+			List<TwitchIRCClient> clientsOld = new ArrayList<TwitchIRCClient>();
+			clientsOld.addAll(clients);
+			for (TwitchIRCClient client : clientsOld) {
 				if (client.getChannelsList().contains(channelName)) {
 					client.removeChannelWithDisconnect(channelName);
 					TwitchIRCEventHooks.triggerOnInfoEvent("Removed channel " + channelName + " from a client");
