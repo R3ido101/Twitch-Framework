@@ -103,8 +103,7 @@ public class TwitchIRCClient extends PircBot {
 				this.disconnect();
 				this.reconnect();
 				TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected client, Client ID: " + ID);
-				for(String channel : this.channels)
-					this.joinChannel("#" + channel);
+				connectToChannels();
 				TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for client, Client ID: " + ID);
 			} while (this.isConnected() == false);
 		} catch (IOException | IrcException e) {
