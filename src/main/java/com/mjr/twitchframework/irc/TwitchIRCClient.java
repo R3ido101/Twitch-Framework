@@ -73,11 +73,11 @@ public class TwitchIRCClient extends PircBot {
 			this.onDisconnect();
 		else {
 			TwitchIRCEventHooks.triggerOnUnknownEvent(line);
-			if (line.contains("msg-id=sub"))
+			if (line.contains("msg-id=sub") && !line.contains("msg-id=subgift"))
 				TwitchIRCEventHooks.triggerOnSubscribeEvent(line);
 			else if (line.contains("msg-id=resub"))
 				TwitchIRCEventHooks.triggerOnReSubscribeEvent(line);
-			else if ((line.contains("msg-id=subgift") || line.contains("msg-id=anonsubgift")) && line.contains("msg-param-recipient-display-name="))
+			else if ((line.contains("msg-id=subgift") || line.contains("msg-id=anonsubgift")) && line.contains("msg-param-recipient-display-name"))
 				TwitchIRCEventHooks.triggerOnGiftSubEvent(line, line.contains("msg-id=anonsubgift"));
 			else if (line.contains("msg-param-mass-gift-count"))
 				TwitchIRCEventHooks.triggerOnSubGiftingEvent(line);
