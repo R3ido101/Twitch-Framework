@@ -4,7 +4,7 @@
 
   <groupId>com.mjr.twitchframework</groupId>
   <artifactId>Twitch-Framework</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
   <packaging>jar</packaging>
 
   <name>Twitch-Framework</name>
