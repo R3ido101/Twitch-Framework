@@ -9,6 +9,8 @@ public class TwitchPubSubManager {
 
 	private static List<TwitchWebsocketClient> clients = new ArrayList<TwitchWebsocketClient>();
 	private static List<Event> listeners = new ArrayList<Event>();
+	
+	private static Thread tickThread;
 
 	public static List<TwitchWebsocketClient> getClients() {
 		return clients;
@@ -30,10 +32,33 @@ public class TwitchPubSubManager {
 		return listeners;
 	}
 
-	public static void tick() {
+	private static void tick() {
 		for (TwitchWebsocketClient client : clients) {
 			if (client.isOpen())
 				client.sendPingMessage();
+		}
+	}
+
+	public static void startTickTimerIfNotAlready() {
+		if(tickThread != null)
+			return;
+		try {
+			tickThread = new Thread("TwitchPubSubManager Tick Ping Thread") {
+				@Override
+				public void run() {
+					while (true) {
+						tick();
+						try {
+							Thread.sleep(240000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+					}
+				}
+			};
+			tickThread.start();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
