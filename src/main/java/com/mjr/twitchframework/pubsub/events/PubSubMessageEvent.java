@@ -1,13 +1,14 @@
 package com.mjr.twitchframework.pubsub.events;
 
 import com.mjr.twitchframework.Event;
+import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
 
 public class PubSubMessageEvent extends Event {
 
 	public final String message;
 
-	public PubSubMessageEvent(String message) {
-		super(PubSubEventType.MESSAGE);
+	public PubSubMessageEvent(String message, TwitchWebsocketClient client) {
+		super(PubSubEventType.MESSAGE, client);
 		this.message = message;
 	}
 

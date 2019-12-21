@@ -1,7 +1,6 @@
 package com.mjr.twitchframework.pubsub;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import com.mjr.twitchframework.Event;
@@ -9,7 +8,7 @@ import com.mjr.twitchframework.Event;
 public class TwitchPubSubManager {
 
 	private static List<TwitchWebsocketClient> clients = new ArrayList<TwitchWebsocketClient>();
-	private static HashMap<Event, TwitchWebsocketClient> listeners = new HashMap<Event, TwitchWebsocketClient>();
+	private static List<Event> listeners = new ArrayList<Event>();
 
 	public static List<TwitchWebsocketClient> getClients() {
 		return clients;
@@ -23,11 +22,11 @@ public class TwitchPubSubManager {
 		TwitchPubSubManager.clients.add(client);
 	}
 
-	public static void registerEventHandler(TwitchWebsocketClient client, Event event) {
-		TwitchPubSubManager.listeners.put(event, client);
+	public static void registerEventHandler(Event event) {
+		TwitchPubSubManager.listeners.add(event);
 	}
 
-	public static HashMap<Event, TwitchWebsocketClient> getEventListeners() {
+	public static List<Event> getEventListeners() {
 		return listeners;
 	}
 

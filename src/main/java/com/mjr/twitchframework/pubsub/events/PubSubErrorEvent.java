@@ -1,13 +1,14 @@
 package com.mjr.twitchframework.pubsub.events;
 
 import com.mjr.twitchframework.Event;
+import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
 
 public class PubSubErrorEvent extends Event {
 
 	public final Exception e;
 
-	public PubSubErrorEvent(Exception e) {
-		super(PubSubEventType.ERROR);
+	public PubSubErrorEvent(Exception e, TwitchWebsocketClient client) {
+		super(PubSubEventType.ERROR, client);
 		this.e = e;
 	}
 

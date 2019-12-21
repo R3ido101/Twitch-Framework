@@ -1,5 +1,7 @@
 package com.mjr.twitchframework;
 
+import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
+
 public class Event {
 
 	public enum PubSubEventType {
@@ -23,6 +25,14 @@ public class Event {
 		this.type = type;
 	}
 
+	public TwitchWebsocketClient client;
+
+	public Event(PubSubEventType type, TwitchWebsocketClient client) {
+		super();
+		this.type = type;
+		this.client = client;
+	}
+
 	public enum IRCEventType {
 		MESSAGE("Message"), MESSAGEEXTRA("MessageExtra"), NOTICE("Notice"), PRIVATEMESSAGE("PrivateMessage"), UNKNOWN("Unknown"), JOIN("Join"), PART("Part"), CONNECT("Connect"), DISCONNECT("Disconnect"), ERRORMSG("ErrorMessage"), INFOMSG(
 				"InfoMessage"), BITS("Bits"), SUBSCRIBE("Subscribe"), RESUBSCRIBE("ReSubscribe"), GIFTSUB("GiftSub"), GIFTINGSUB("GiftingSub");
@@ -44,4 +54,5 @@ public class Event {
 		super();
 		this.typeIRC = type;
 	}
+
 }
