@@ -5,7 +5,7 @@ import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
 public class Event {
 
 	public enum PubSubEventType {
-		MESSAGE("Message"), ERROR("Error"), CONNECT("Connect"), DISCONNECT("Disconnect");
+		MESSAGE("Message"), ERROR("Error"), INFO("Info"), CONNECT("Connect"), DISCONNECT("Disconnect");
 
 		public final String name;
 

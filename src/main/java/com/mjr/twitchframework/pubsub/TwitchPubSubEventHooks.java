@@ -7,6 +7,7 @@ import com.mjr.twitchframework.Event.PubSubEventType;
 import com.mjr.twitchframework.pubsub.events.PubSubConnectEvent;
 import com.mjr.twitchframework.pubsub.events.PubSubDisconnectEvent;
 import com.mjr.twitchframework.pubsub.events.PubSubErrorEvent;
+import com.mjr.twitchframework.pubsub.events.PubSubInfoEvent;
 import com.mjr.twitchframework.pubsub.events.PubSubMessageEvent;
 
 public class TwitchPubSubEventHooks {
@@ -18,10 +19,10 @@ public class TwitchPubSubEventHooks {
 		}
 	}
 
-	public static void triggerErrorEvent(TwitchWebsocketClient client, Exception error) {
+	public static void triggerErrorEvent(TwitchWebsocketClient client, String errorMessage, Throwable error) {
 		for (Event event : TwitchPubSubManager.getEventListeners()) {
 			if (PubSubEventType.ERROR.getName().equalsIgnoreCase(event.type.getName()))
-				((PubSubErrorEvent) event).onEvent(new PubSubErrorEvent(error, client));
+				((PubSubErrorEvent) event).onEvent(new PubSubErrorEvent(errorMessage, error, client));
 		}
 	}
 
@@ -36,6 +37,13 @@ public class TwitchPubSubEventHooks {
 		for (Event event : TwitchPubSubManager.getEventListeners()) {
 			if (PubSubEventType.DISCONNECT.getName().equalsIgnoreCase(event.type.getName()))
 				((PubSubDisconnectEvent) event).onEvent(new PubSubDisconnectEvent(codes, message, byRemoteHost, client));
+		}
+	}
+
+	public static void triggerInfoEvent(TwitchWebsocketClient client, String message) {
+		for (Event event : TwitchPubSubManager.getEventListeners()) {
+			if (PubSubEventType.INFO.getName().equalsIgnoreCase(event.type.getName()))
+				((PubSubInfoEvent) event).onEvent(new PubSubInfoEvent(message, client));
 		}
 	}
 

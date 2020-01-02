@@ -5,6 +5,8 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.List;
 
+import org.java_websocket.enums.Opcode;
+import org.java_websocket.framing.FramedataImpl1;
 import org.java_websocket.handshake.ServerHandshake;
 
 import com.google.gson.Gson;
@@ -18,18 +20,21 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 	public static Gson gson = new Gson();
 	private HashMap<String, List<String>> requests = new HashMap<String, List<String>>();
 	private boolean showDebugMessages = false;
+	private int channelID;
 
-	public TwitchWebsocketClient(HashMap<String, List<String>> requests, boolean debug) throws URISyntaxException {
+	public TwitchWebsocketClient(HashMap<String, List<String>> requests, boolean debug, int channelID) throws URISyntaxException {
 		super(new URI("wss://pubsub-edge.twitch.tv"));
 		this.requests = requests;
 		this.connect();
 		this.setShowDebugMessages(debug);
+		this.channelID = channelID;
 	}
 
-	public TwitchWebsocketClient(HashMap<String, List<String>> requests) throws URISyntaxException {
+	public TwitchWebsocketClient(HashMap<String, List<String>> requests, int channelID) throws URISyntaxException {
 		super(new URI("wss://pubsub-edge.twitch.tv"));
 		this.requests = requests;
 		this.connect();
+		this.channelID = channelID;
 	}
 
 	public void sendListenRequests() {
@@ -39,7 +44,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 			JsonObject data = new JsonObject();
 			JsonArray topics = new JsonArray();
 			for (String topic : requests.get(request))
-				topics.add(topic);
+				topics.add((String) topic);
 			data.add("topics", topics);
 			data.addProperty("auth_token", request);
 			json.add("data", data);
@@ -48,20 +53,24 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 	}
 
 	public void sendPingMessage() {
+		FramedataImpl1 frame = FramedataImpl1.get(Opcode.PING);
+		frame.setFin(true);
+		this.sendFrame(frame);
 		JsonObject json = new JsonObject();
 		json.addProperty("type", "PING");
 		this.send(json.toString());
 		if (this.isShowDebugMessages())
-			System.out.println("SENDING PING MESSAGE!");
+			TwitchPubSubEventHooks.triggerInfoEvent(this, "SENDING PING MESSAGE!");
 	}
 
 	@Override
 	public void onOpen(ServerHandshake serverHandshake) {
 		if (this.isShowDebugMessages())
-			System.out.println(new java.util.Date() + " [onOpen] " + serverHandshake.getHttpStatus() + " | " + serverHandshake.getHttpStatusMessage());
-		System.out.println("CONNECTION OPENED!");
+			TwitchPubSubEventHooks.triggerInfoEvent(this, "[onOpen] " + serverHandshake.getHttpStatus() + " | " + serverHandshake.getHttpStatusMessage());
+		TwitchPubSubEventHooks.triggerInfoEvent(this, "CONNECTION OPENED!");
 		TwitchPubSubEventHooks.triggerConnectEvent(this, serverHandshake);
 		sendListenRequests();
+		this.sendPingMessage();
 	}
 
 	@Override
@@ -78,11 +87,11 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 			break;
 		case "PONG":
 			if (this.isShowDebugMessages())
-				System.out.println(new java.util.Date() + " [onMessage] RECEIVED PONG MESSAGE!");
+				TwitchPubSubEventHooks.triggerInfoEvent(this, "[onMessage] RECEIVED PONG MESSAGE!");
 			break;
 		default:
 			if (this.isShowDebugMessages())
-				System.out.println(new java.util.Date() + " [onMessage] " + message);
+				TwitchPubSubEventHooks.triggerInfoEvent(this, "[onMessage] " + message);
 			TwitchPubSubEventHooks.triggerMessageEvent(this, message);
 			break;
 		}
@@ -91,17 +100,15 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 	@Override
 	public void onClose(int codes, String message, boolean byRemoteHost) {
 		if (this.isShowDebugMessages())
-			System.out.println(new java.util.Date() + " [onClose] " + message + " | " + codes + " | " + byRemoteHost);
+			TwitchPubSubEventHooks.triggerInfoEvent(this, "[onClose] " + message + " | " + codes + " | " + byRemoteHost);
 		this.close();
-		System.out.println("CONNECTION CLOSED!");
+		TwitchPubSubEventHooks.triggerInfoEvent(this, "CONNECTION CLOSED!");
 		TwitchPubSubEventHooks.triggerDisconnectEvent(this, codes, message, byRemoteHost);
-
 	}
 
 	@Override
 	public void onError(Exception e) {
-		System.out.println("[onError] " + e.getMessage());
-		TwitchPubSubEventHooks.triggerErrorEvent(this, e);
+		TwitchPubSubEventHooks.triggerErrorEvent(this, "onError method", e);
 	}
 
 	public HashMap<String, List<String>> getRequests() {
@@ -118,6 +125,10 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 
 	public void setShowDebugMessages(boolean showDebugMessages) {
 		this.showDebugMessages = showDebugMessages;
+	}
+
+	public int getChannelID() {
+		return channelID;
 	}
 
 }

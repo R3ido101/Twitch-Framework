@@ -5,16 +5,19 @@ import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
 
 public class PubSubErrorEvent extends Event {
 
-	public final Exception e;
+	public final String errorMessage;
+	public final Throwable error;
 
-	public PubSubErrorEvent(Exception e, TwitchWebsocketClient client) {
+	public PubSubErrorEvent(String errorMessage, Throwable error, TwitchWebsocketClient client) {
 		super(PubSubEventType.ERROR, client);
-		this.e = e;
+		this.errorMessage = errorMessage;
+		this.error = error;
 	}
 
 	public PubSubErrorEvent() {
 		super(PubSubEventType.ERROR);
-		this.e = null;
+		this.errorMessage = null;
+		this.error = null;
 	}
 
 	public void onEvent(PubSubErrorEvent event) {
