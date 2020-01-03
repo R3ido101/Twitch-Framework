@@ -14,6 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mjr.twitchframework.BasicWebSocketClient;
+import com.mjr.twitchframework.TwitchReconnectManager;
 
 public class TwitchWebsocketClient extends BasicWebSocketClient {
 
@@ -24,6 +25,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 
 	public TwitchWebsocketClient(HashMap<String, List<String>> requests, boolean debug, int channelID) throws URISyntaxException {
 		super(new URI("wss://pubsub-edge.twitch.tv"));
+		TwitchReconnectManager.initTwitchReconnectThreadIfDoesntExist();
 		this.requests = requests;
 		this.connect();
 		this.setShowDebugMessages(debug);
@@ -32,6 +34,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 
 	public TwitchWebsocketClient(HashMap<String, List<String>> requests, int channelID) throws URISyntaxException {
 		super(new URI("wss://pubsub-edge.twitch.tv"));
+		TwitchReconnectManager.initTwitchReconnectThreadIfDoesntExist();
 		this.requests = requests;
 		this.connect();
 		this.channelID = channelID;
@@ -104,7 +107,7 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		this.close();
 		TwitchPubSubEventHooks.triggerInfoEvent(this, "CONNECTION CLOSED!");
 		TwitchPubSubEventHooks.triggerDisconnectEvent(this, codes, message, byRemoteHost);
-		TwitchPubSubManager.reconnectClient(this);
+		TwitchReconnectManager.getTwitchReconnectThread().addTwitchPubSubClient(this);
 	}
 	
 	public void reconnectClient() throws InterruptedException {

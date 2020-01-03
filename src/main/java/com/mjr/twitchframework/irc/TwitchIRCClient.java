@@ -8,8 +8,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
+
+import com.mjr.twitchframework.TwitchReconnectManager;
 
 public class TwitchIRCClient extends PircBot {
 
@@ -22,6 +23,7 @@ public class TwitchIRCClient extends PircBot {
 	}
 
 	public boolean connectToTwitch(String username, String password) throws IOException {
+		TwitchReconnectManager.initTwitchReconnectThreadIfDoesntExist();
 		if (!username.equals("") && !password.equals("") && !(username == null) && !(password == null)) {
 			this.setName(username);
 			try {
@@ -83,7 +85,7 @@ public class TwitchIRCClient extends PircBot {
 		}
 		return Collections.unmodifiableMap(map);
 	}
-	
+
 	@Override
 	protected void onUnknown(String line) {
 		if (line.contains("RECONNECT"))
@@ -97,7 +99,7 @@ public class TwitchIRCClient extends PircBot {
 				TwitchIRCEventHooks.triggerOnReSubscribeEvent(line);
 			else if (tags.containsKey("msg-id") && (tags.get("msg-id").equalsIgnoreCase("subgift") || tags.get("msg-id").equalsIgnoreCase("anonsubgift")))
 				TwitchIRCEventHooks.triggerOnGiftSubEvent(line, tags.get("msg-id").equalsIgnoreCase("anonsubgift"));
-			else if(tags.containsKey("msg-param-mass-gift-count"))
+			else if (tags.containsKey("msg-param-mass-gift-count"))
 				TwitchIRCEventHooks.triggerOnSubGiftingEvent(line);
 		}
 	}
@@ -117,19 +119,16 @@ public class TwitchIRCClient extends PircBot {
 		TwitchIRCEventHooks.triggerOnDisconnectEvent(this);
 		try {
 			do {
-				TwitchIRCEventHooks.triggerOnInfoEvent("Trying to reconnect client, Client ID: " + ID);
+				TwitchIRCEventHooks.triggerOnInfoEvent("Disconnect client, Client ID: " + ID);
 				this.disconnect();
-				this.reconnect();
-				TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected client, Client ID: " + ID);
-				connectToChannels();
-				TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for client, Client ID: " + ID);
+				TwitchReconnectManager.getTwitchReconnectThread().addTwitchIRCClient(this);
 			} while (this.isConnected() == false);
-		} catch (IOException | IrcException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 			TwitchIRCEventHooks.triggerOnErrorEvent("Error processing onDisconnectEvent for an client, Client ID: " + ID, e);
 		}
 	}
-	
+
 	protected void onConnect() {
 	}
 
