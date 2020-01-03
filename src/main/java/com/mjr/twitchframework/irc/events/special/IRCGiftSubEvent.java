@@ -10,7 +10,7 @@ public class IRCGiftSubEvent extends IRCSpecialEventBase {
 	}
 
 	public IRCGiftSubEvent() {
-		super(null, IRCEventType.BITS);
+		super(null, IRCEventType.GIFTSUB);
 		this.isAnonymousGift = false;
 	}
 

@@ -20,7 +20,10 @@ public class IRCSubscribeEvent extends IRCSpecialEventBase {
 		super(rawLine, IRCEventType.SUBSCRIBE);
 		this.sender = this.tags.get("display-name");
 		this.isPrime = this.tags.get("msg-param-sub-plan").equalsIgnoreCase("prime");
-		type = SubscriptionType.getTypeByValue(Integer.parseInt(tags.get("msg-param-sub-plan")));
+		if(isPrime)
+			type = null;
+		else
+			type = SubscriptionType.getTypeByValue(Integer.parseInt(tags.get("msg-param-sub-plan")));
 	}
 
 	public IRCSubscribeEvent() {

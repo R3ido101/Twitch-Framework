@@ -91,11 +91,11 @@ public class TwitchIRCClient extends PircBot {
 		else {
 			Map<String, String> tags = parseTags(line);
 			TwitchIRCEventHooks.triggerOnUnknownEvent(line);
-			if (tags.get("msg-id").equalsIgnoreCase("sub") && !tags.get("msg-id").equalsIgnoreCase("subgift") && !tags.containsKey("msg-param-mass-gift-count"))
+			if (tags.containsKey("msg-id") && tags.get("msg-id").equalsIgnoreCase("sub") && !tags.get("msg-id").equalsIgnoreCase("subgift") && !tags.containsKey("msg-param-mass-gift-count"))
 				TwitchIRCEventHooks.triggerOnSubscribeEvent(line);
-			else if (tags.get("msg-id").equalsIgnoreCase("resub"))
+			else if (tags.containsKey("msg-id") && tags.get("msg-id").equalsIgnoreCase("resub"))
 				TwitchIRCEventHooks.triggerOnReSubscribeEvent(line);
-			else if (tags.get("msg-id").equalsIgnoreCase("subgift") || tags.get("msg-id").equalsIgnoreCase("anonsubgift"))
+			else if (tags.containsKey("msg-id") && (tags.get("msg-id").equalsIgnoreCase("subgift") || tags.get("msg-id").equalsIgnoreCase("anonsubgift")))
 				TwitchIRCEventHooks.triggerOnGiftSubEvent(line, tags.get("msg-id").equalsIgnoreCase("anonsubgift"));
 			else if(tags.containsKey("msg-param-mass-gift-count"))
 				TwitchIRCEventHooks.triggerOnSubGiftingEvent(line);
