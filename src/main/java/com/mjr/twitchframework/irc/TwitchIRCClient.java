@@ -2,7 +2,11 @@ package com.mjr.twitchframework.irc;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 
 import org.jibble.pircbot.IrcException;
 import org.jibble.pircbot.PircBot;
@@ -67,19 +71,33 @@ public class TwitchIRCClient extends PircBot {
 		TwitchIRCEventHooks.triggerOnPrivateMessageEvent(sender, login, hostname, channel, message);
 	}
 
+	private Map<String, String> parseTags(String raw) {
+		HashMap<String, String> map = new HashMap<>();
+		if (!raw.isEmpty()) {
+			for (String tag : raw.split(";")) {
+				String[] val = tag.split("=");
+				final String key = val[0];
+				String value = (val.length > 1) ? val[1] : null;
+				map.put(key, value);
+			}
+		}
+		return Collections.unmodifiableMap(map);
+	}
+	
 	@Override
 	protected void onUnknown(String line) {
 		if (line.contains("RECONNECT"))
 			this.onDisconnect();
 		else {
+			Map<String, String> tags = parseTags(line);
 			TwitchIRCEventHooks.triggerOnUnknownEvent(line);
-			if (line.contains("msg-id=sub") && !line.contains("msg-id=subgift"))
+			if (tags.get("msg-id").equalsIgnoreCase("sub") && !tags.get("msg-id").equalsIgnoreCase("subgift") && !tags.containsKey("msg-param-mass-gift-count"))
 				TwitchIRCEventHooks.triggerOnSubscribeEvent(line);
-			else if (line.contains("msg-id=resub"))
+			else if (tags.get("msg-id").equalsIgnoreCase("resub"))
 				TwitchIRCEventHooks.triggerOnReSubscribeEvent(line);
-			else if ((line.contains("msg-id=subgift") || line.contains("msg-id=anonsubgift")) && line.contains("msg-param-recipient-display-name"))
-				TwitchIRCEventHooks.triggerOnGiftSubEvent(line, line.contains("msg-id=anonsubgift"));
-			else if (line.contains("msg-param-mass-gift-count"))
+			else if (tags.get("msg-id").equalsIgnoreCase("subgift") || tags.get("msg-id").equalsIgnoreCase("anonsubgift"))
+				TwitchIRCEventHooks.triggerOnGiftSubEvent(line, tags.get("msg-id").equalsIgnoreCase("anonsubgift"));
+			else if(tags.containsKey("msg-param-mass-gift-count"))
 				TwitchIRCEventHooks.triggerOnSubGiftingEvent(line);
 		}
 	}
