@@ -25,16 +25,7 @@ public class TwitchPubSubManager {
 	}
 	
 	public static void reconnectClient(final TwitchWebsocketClient client) {
-		Thread temp = new Thread() {
-			@Override
-			public void run() {
-				try {
-					client.reconnectClient();
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		};
+		Thread temp = new ReconnectThread(client);
 		temp.start();
 	}
 
