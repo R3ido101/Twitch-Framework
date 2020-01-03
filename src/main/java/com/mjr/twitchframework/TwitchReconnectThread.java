@@ -1,6 +1,7 @@
 package com.mjr.twitchframework;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import com.mjr.twitchframework.irc.TwitchIRCClient;
@@ -25,20 +26,25 @@ public class TwitchReconnectThread extends Thread {
 		while (true) {
 			try {
 				if (twitchClients.size() != 0) {
-					for (TwitchIRCClient client : twitchClients) {
+
+					Iterator<TwitchIRCClient> iterator = twitchClients.iterator();
+					while (iterator.hasNext()) {
+						TwitchIRCClient client = iterator.next();
 						client.reconnect();
 						TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected client, Client ID: " + client.getID());
 						client.connectToChannels();
 						TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for client, Client ID: " + client.getID());
-						twitchClients.remove(client);
+						iterator.remove();
 						if (twitchClients.size() != 0)
 							Thread.sleep(twitchClientIRCSleepTime * 1000);
 					}
 				}
 				if (twitchPubSubs.size() != 0) {
-					for (TwitchWebsocketClient client : twitchPubSubs) {
+					Iterator<TwitchWebsocketClient> iterator = twitchPubSubs.iterator();
+					while (iterator.hasNext()) {
+						TwitchWebsocketClient client = iterator.next();
 						client.reconnectClient();
-						twitchPubSubs.remove(client);
+						iterator.remove();
 						if (twitchPubSubs.size() != 0)
 							Thread.sleep(twitchClientPubSubSleepTime * 1000);
 					}
