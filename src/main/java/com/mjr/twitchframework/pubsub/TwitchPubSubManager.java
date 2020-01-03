@@ -23,6 +23,20 @@ public class TwitchPubSubManager {
 	public static void addClient(TwitchWebsocketClient client) {
 		TwitchPubSubManager.clients.add(client);
 	}
+	
+	public static void reconnectClient(final TwitchWebsocketClient client) {
+		Thread temp = new Thread() {
+			@Override
+			public void run() {
+				try {
+					client.reconnectClient();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		};
+		temp.start();
+	}
 
 	public static void registerEventHandler(Event event) {
 		TwitchPubSubManager.listeners.add(event);

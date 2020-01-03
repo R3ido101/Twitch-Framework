@@ -104,6 +104,11 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 		this.close();
 		TwitchPubSubEventHooks.triggerInfoEvent(this, "CONNECTION CLOSED!");
 		TwitchPubSubEventHooks.triggerDisconnectEvent(this, codes, message, byRemoteHost);
+		TwitchPubSubManager.reconnectClient(this);
+	}
+	
+	public void reconnectClient() throws InterruptedException {
+		this.reconnectBlocking();
 	}
 
 	@Override
