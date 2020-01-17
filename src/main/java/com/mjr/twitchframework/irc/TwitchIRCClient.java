@@ -89,7 +89,7 @@ public class TwitchIRCClient extends PircBot {
 	@Override
 	protected void onUnknown(String line) {
 		if (line.contains("RECONNECT"))
-			this.onDisconnect();
+			this.disconnect();
 		else {
 			Map<String, String> tags = parseTags(line);
 			TwitchIRCEventHooks.triggerOnUnknownEvent(line);
@@ -120,7 +120,6 @@ public class TwitchIRCClient extends PircBot {
 		try {
 			do {
 				TwitchIRCEventHooks.triggerOnInfoEvent("Disconnect client, Client ID: " + ID);
-				this.disconnect();
 				TwitchReconnectManager.getTwitchReconnectThread().addTwitchIRCClient(this);
 			} while (this.isConnected() == false);
 		} catch (Exception e) {
