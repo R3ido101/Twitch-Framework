@@ -26,7 +26,6 @@ public class TwitchReconnectThread extends Thread {
 		while (true) {
 			try {
 				if (twitchClients.size() != 0) {
-
 					Iterator<TwitchIRCClient> iterator = twitchClients.iterator();
 					while (iterator.hasNext()) {
 						TwitchIRCClient client = iterator.next();
@@ -34,9 +33,9 @@ public class TwitchReconnectThread extends Thread {
 						TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected client, Client ID: " + client.getID());
 						client.connectToChannels();
 						TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for client, Client ID: " + client.getID());
-						iterator.remove();
-						if (twitchClients.size() != 0)
-							Thread.sleep(twitchClientIRCSleepTime * 1000);
+						Thread.sleep(twitchClientIRCSleepTime * 1000);
+						if (twitchClients.size() != 0 && client.isClientConnected())
+							iterator.remove();
 					}
 				}
 				if (twitchPubSubs.size() != 0) {
@@ -44,9 +43,9 @@ public class TwitchReconnectThread extends Thread {
 					while (iterator.hasNext()) {
 						TwitchWebsocketClient client = iterator.next();
 						client.reconnectClient();
-						iterator.remove();
-						if (twitchPubSubs.size() != 0)
-							Thread.sleep(twitchClientPubSubSleepTime * 1000);
+						Thread.sleep(twitchClientPubSubSleepTime * 1000);
+						if (twitchPubSubs.size() != 0 && client.isOpen())
+							iterator.remove();
 					}
 				}
 				try {

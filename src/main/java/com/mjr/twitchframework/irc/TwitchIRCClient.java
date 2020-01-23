@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import org.jibble.pircbot.PircBot;
 
@@ -118,10 +117,8 @@ public class TwitchIRCClient extends PircBot {
 	protected void onDisconnect() {
 		TwitchIRCEventHooks.triggerOnDisconnectEvent(this);
 		try {
-			do {
-				TwitchIRCEventHooks.triggerOnInfoEvent("Disconnect client, Client ID: " + ID);
-				TwitchReconnectManager.getTwitchReconnectThread().addTwitchIRCClient(this);
-			} while (this.isConnected() == false);
+			TwitchIRCEventHooks.triggerOnInfoEvent("Disconnect client, Client ID: " + ID);
+			TwitchReconnectManager.getTwitchReconnectThread().addTwitchIRCClient(this);
 		} catch (Exception e) {
 			e.printStackTrace();
 			TwitchIRCEventHooks.triggerOnErrorEvent("Error processing onDisconnectEvent for an client, Client ID: " + ID, e);
