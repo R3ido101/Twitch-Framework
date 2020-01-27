@@ -1,16 +1,16 @@
 package com.mjr.twitchframework;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.mjr.twitchframework.irc.TwitchIRCClient;
 import com.mjr.twitchframework.irc.TwitchIRCEventHooks;
 import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
 
 public class TwitchReconnectThread extends Thread {
-	private List<TwitchIRCClient> twitchClients = new ArrayList<TwitchIRCClient>();
-	private List<TwitchWebsocketClient> twitchPubSubs = new ArrayList<TwitchWebsocketClient>();
+	private CopyOnWriteArrayList<TwitchIRCClient> twitchClients = new CopyOnWriteArrayList<TwitchIRCClient>();
+	private CopyOnWriteArrayList<TwitchWebsocketClient> twitchPubSubs = new CopyOnWriteArrayList<TwitchWebsocketClient>();
 
 	private int twitchClientIRCSleepTime;
 	private int twitchClientPubSubSleepTime;

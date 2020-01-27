@@ -115,6 +115,7 @@ public class TwitchIRCClient extends PircBot {
 
 	@Override
 	protected void onDisconnect() {
+		this.disconnect();
 		TwitchIRCEventHooks.triggerOnDisconnectEvent(this);
 		try {
 			TwitchIRCEventHooks.triggerOnInfoEvent("Disconnect client, Client ID: " + ID);
