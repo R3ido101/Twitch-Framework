@@ -35,7 +35,7 @@ public class TwitchReconnectThread extends Thread {
 						TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for client, Client ID: " + client.getID());
 						Thread.sleep(twitchClientIRCSleepTime * 1000);
 						if (twitchClients.size() != 0 && client.isClientConnected())
-							iterator.remove();
+							twitchClients.remove(client);
 					}
 				}
 				if (twitchPubSubs.size() != 0) {
@@ -45,7 +45,7 @@ public class TwitchReconnectThread extends Thread {
 						client.reconnectClient();
 						Thread.sleep(twitchClientPubSubSleepTime * 1000);
 						if (twitchPubSubs.size() != 0 && client.isOpen())
-							iterator.remove();
+							twitchPubSubs.remove(client);
 					}
 				}
 				try {
