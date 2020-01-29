@@ -86,7 +86,6 @@ public class TwitchWebsocketClient extends BasicWebSocketClient {
 			} catch (InterruptedException e) {
 				onError(e);
 			}
-			this.connect();
 			break;
 		case "PONG":
 			if (this.isShowDebugMessages())
