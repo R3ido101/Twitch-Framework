@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.*;
-import com.mjr.twitchframework.KrakenEndpoints;
 import com.mjr.twitchframework.exceptions.MissingOrInvalidAuthException;
 import com.mjr.twitchframework.exceptions.RemoteServerException;
 import com.mjr.twitchframework.exceptions.StreamNotFoundOrIsOffline;
@@ -26,7 +25,7 @@ public class KrakenEndpointsManager {
 	public static List<ChannelFollowedUser> getChannelFollowers(int channelID, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
 		List<ChannelFollowedUser> users = new ArrayList<ChannelFollowedUser>();
 		HttpURLConnection connection = null;
-		connection = HTTPConnect.getRequest(KrakenEndpoints.twitchGetChannelsFollowsAPI(channelID, 100, clientID));
+		connection = HTTPConnect.getRequest(KrakenEndpoints.getChannelsFollowsAPI(channelID, 100, clientID));
 		int responseCode = connection.getResponseCode();
 		if (responseCode == 429)
 			throw new TooManyRequestsException();
@@ -46,7 +45,7 @@ public class KrakenEndpointsManager {
 				total = 1700;
 			do {
 				if (current != 1) {
-					connection = HTTPConnect.getRequest(KrakenEndpoints.twitchGetChannelsFollowsAPI(channelID, 100, current - 1, clientID));
+					connection = HTTPConnect.getRequest(KrakenEndpoints.getChannelsFollowsAPI(channelID, 100, current - 1, clientID));
 					json = gsonParser.parse(HTTPConnect.getResult(connection));
 					obj = json.getAsJsonObject();
 				}
@@ -63,7 +62,7 @@ public class KrakenEndpointsManager {
 	public static List<UserFollowedChannel> getUserFollowers(int channelID, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
 		List<UserFollowedChannel> users = new ArrayList<UserFollowedChannel>();
 		HttpURLConnection connection = null;
-		connection = HTTPConnect.getRequest(KrakenEndpoints.twitchGetUsersFollowsAPI(channelID, 100, clientID));
+		connection = HTTPConnect.getRequest(KrakenEndpoints.getUsersFollowsAPI(channelID, 100, clientID));
 		int responseCode = connection.getResponseCode();
 		if (responseCode == 429)
 			throw new TooManyRequestsException();
@@ -83,7 +82,7 @@ public class KrakenEndpointsManager {
 				total = 1700;
 			do {
 				if (current != 1) {
-					connection = HTTPConnect.getRequest(KrakenEndpoints.twitchGetUsersFollowsAPI(channelID, 100, current - 1, clientID));
+					connection = HTTPConnect.getRequest(KrakenEndpoints.getUsersFollowsAPI(channelID, 100, current - 1, clientID));
 					json = gsonParser.parse(HTTPConnect.getResult(connection));
 					obj = json.getAsJsonObject();
 				}
@@ -99,7 +98,7 @@ public class KrakenEndpointsManager {
 
 	public static KrakenStream getStream(int channelID, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException, StreamNotFoundOrIsOffline {
 		HttpURLConnection connection = null;
-		connection = HTTPConnect.getRequest(KrakenEndpoints.twitchGetStreamsAPI(channelID, clientID));
+		connection = HTTPConnect.getRequest(KrakenEndpoints.getStreamsAPI(channelID, clientID));
 		int responseCode = connection.getResponseCode();
 		if (responseCode == 429)
 			throw new TooManyRequestsException();
@@ -122,7 +121,7 @@ public class KrakenEndpointsManager {
 
 	public static KrakenChannel getChannel(int channelID, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
 		HttpURLConnection connection = null;
-		connection = HTTPConnect.getRequest(KrakenEndpoints.twitchGetChannelsAPI(channelID, clientID));
+		connection = HTTPConnect.getRequest(KrakenEndpoints.getChannelsAPI(channelID, clientID));
 		int responseCode = connection.getResponseCode();
 		if (responseCode == 429)
 			throw new TooManyRequestsException();
