@@ -9,7 +9,7 @@ public class TwitchPubSubManager {
 
 	private static List<TwitchWebsocketClient> clients = new ArrayList<TwitchWebsocketClient>();
 	private static List<Event> listeners = new ArrayList<Event>();
-	
+
 	private static Thread tickThread;
 
 	public static List<TwitchWebsocketClient> getClients() {
@@ -40,7 +40,7 @@ public class TwitchPubSubManager {
 	}
 
 	public static void startTickTimerIfNotAlready() {
-		if(tickThread != null)
+		if (tickThread != null)
 			return;
 		try {
 			tickThread = new Thread("TwitchPubSubManager Tick Ping Thread") {

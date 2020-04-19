@@ -2,21 +2,8 @@ package com.mjr.twitchframework.irc;
 
 import com.mjr.twitchframework.Event;
 import com.mjr.twitchframework.Event.IRCEventType;
-import com.mjr.twitchframework.irc.events.IRCDisconnectEvent;
-import com.mjr.twitchframework.irc.events.IRCErrorEvent;
-import com.mjr.twitchframework.irc.events.IRCInfoEvent;
-import com.mjr.twitchframework.irc.events.IRCJoinEvent;
-import com.mjr.twitchframework.irc.events.IRCMessageEvent;
-import com.mjr.twitchframework.irc.events.IRCMessageExtraEvent;
-import com.mjr.twitchframework.irc.events.IRCNoticeEvent;
-import com.mjr.twitchframework.irc.events.IRCPartEvent;
-import com.mjr.twitchframework.irc.events.IRCPrivateMessageEvent;
-import com.mjr.twitchframework.irc.events.IRCUnknownEvent;
-import com.mjr.twitchframework.irc.events.special.IRCBitsEvent;
-import com.mjr.twitchframework.irc.events.special.IRCGiftSubEvent;
-import com.mjr.twitchframework.irc.events.special.IRCReSubscribeEvent;
-import com.mjr.twitchframework.irc.events.special.IRCSubGiftingEvent;
-import com.mjr.twitchframework.irc.events.special.IRCSubscribeEvent;
+import com.mjr.twitchframework.irc.events.*;
+import com.mjr.twitchframework.irc.events.special.*;
 
 public class TwitchIRCEventHooks {
 	public static void triggerOnMessageEvent(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {

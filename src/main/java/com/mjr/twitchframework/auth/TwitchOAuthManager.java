@@ -64,7 +64,7 @@ public class TwitchOAuthManager {
 			return null;
 		}
 
-	};
+	}
 
 	public static TwitchAuthedUserInfo validateOrGetOAuthedUserInfo(String accessToken) throws IOException, FileNotFoundException, MissingOrInvalidAuthException, RemoteServerException, TooManyRequestsException {
 		HashMap<String, String> headers = new HashMap<String, String>();

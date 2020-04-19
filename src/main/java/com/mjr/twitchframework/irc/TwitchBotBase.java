@@ -29,7 +29,7 @@ public abstract class TwitchBotBase {
 
 	/**
 	 * Same as onMessage but includes the rawMessage for extra parsing
-	 * 
+	 *
 	 * @param line
 	 * @param channel
 	 * @param sender

@@ -1,4 +1,3 @@
-
 package com.mjr.twitchframework.irc.events.special;
 
 import java.util.Collections;

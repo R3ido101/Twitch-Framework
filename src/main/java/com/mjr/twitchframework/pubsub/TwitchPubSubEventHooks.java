@@ -4,11 +4,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import com.mjr.twitchframework.Event;
 import com.mjr.twitchframework.Event.PubSubEventType;
-import com.mjr.twitchframework.pubsub.events.PubSubConnectEvent;
-import com.mjr.twitchframework.pubsub.events.PubSubDisconnectEvent;
-import com.mjr.twitchframework.pubsub.events.PubSubErrorEvent;
-import com.mjr.twitchframework.pubsub.events.PubSubInfoEvent;
-import com.mjr.twitchframework.pubsub.events.PubSubMessageEvent;
+import com.mjr.twitchframework.pubsub.events.*;
 
 public class TwitchPubSubEventHooks {
 
