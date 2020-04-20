@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
-import com.mjr.twitchframework.kraken.objects.KrakenChannel;
+import com.mjr.twitchframework.kraken.objects.channels.KrakenExtentedChannelInfo;
 
 public class KrakenStream {
 	@SerializedName("_id")
@@ -34,7 +34,7 @@ public class KrakenStream {
 	@SerializedName("preview")
 	private StreamPreviewImages preview;
 	@SerializedName("channel")
-	private KrakenChannel channel;
+	private KrakenExtentedChannelInfo channel;
 
 	public Long getId() {
 		return id;
@@ -88,7 +88,7 @@ public class KrakenStream {
 		return preview;
 	}
 
-	public KrakenChannel getChannel() {
+	public KrakenExtentedChannelInfo getChannel() {
 		return channel;
 	}
 

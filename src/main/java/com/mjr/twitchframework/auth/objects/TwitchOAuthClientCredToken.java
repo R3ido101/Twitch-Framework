@@ -16,10 +16,6 @@ public class TwitchOAuthClientCredToken {
 		return accessToken;
 	}
 
-	public String getRefreshToken() {
-		return refreshToken;
-	}
-
 	public int getExpiresIn() {
 		return expiresIn;
 	}
@@ -30,12 +26,6 @@ public class TwitchOAuthClientCredToken {
 
 	public boolean checkAccessTokenLength() {
 		if (this.accessToken.length() == 30)
-			return true;
-		return false;
-	}
-
-	public boolean checkRefreshTokenLength() {
-		if (this.refreshToken.length() == 50)
 			return true;
 		return false;
 	}

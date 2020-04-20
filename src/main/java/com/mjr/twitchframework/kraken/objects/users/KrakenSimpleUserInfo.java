@@ -1,10 +1,10 @@
-package com.mjr.twitchframework.kraken.objects.channels;
+package com.mjr.twitchframework.kraken.objects.users;
 
 import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
 
-public class ChannelFollowedUserInfo {
+public class KrakenSimpleUserInfo {
 	@SerializedName("display_name")
 	private String displayName;
 	@SerializedName("_id")

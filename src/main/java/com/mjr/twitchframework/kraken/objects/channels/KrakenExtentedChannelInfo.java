@@ -1,8 +1,8 @@
-package com.mjr.twitchframework.kraken.objects;
+package com.mjr.twitchframework.kraken.objects.channels;
 
 import com.google.gson.annotations.SerializedName;
 
-public class KrakenChannel {
+public class KrakenExtentedChannelInfo {
 	@SerializedName("mature")
 	private boolean mature;
 	@SerializedName("status")

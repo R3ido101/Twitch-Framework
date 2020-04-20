@@ -3,12 +3,13 @@ package com.mjr.twitchframework.kraken.objects.channels;
 import java.util.Date;
 
 import com.google.gson.annotations.SerializedName;
+import com.mjr.twitchframework.kraken.objects.users.KrakenSimpleUserInfo;
 
-public class ChannelFollowedUser {
+public class KrakenChannelsFollowedUser {
 	@SerializedName("created_at")
 	private Date createdAt;
 	private boolean notifications;
-	private ChannelFollowedUserInfo user;
+	private KrakenSimpleUserInfo user;
 
 	public Date getCreatedAt() {
 		return createdAt;
@@ -18,7 +19,7 @@ public class ChannelFollowedUser {
 		return notifications;
 	}
 
-	public ChannelFollowedUserInfo getUser() {
+	public KrakenSimpleUserInfo getUser() {
 		return user;
 	}
 
