@@ -13,10 +13,7 @@ import com.mjr.twitchframework.exceptions.RemoteServerException;
 import com.mjr.twitchframework.exceptions.StreamNotFoundOrIsOffline;
 import com.mjr.twitchframework.exceptions.TooManyRequestsException;
 import com.mjr.twitchframework.kraken.chat.KrakenFullChatEmoticons;
-import com.mjr.twitchframework.kraken.objects.channels.KrakenAuthedChannelInfo;
-import com.mjr.twitchframework.kraken.objects.channels.KrakenChannelsFollowedUser;
-import com.mjr.twitchframework.kraken.objects.channels.KrakenExtentedChannelInfo;
-import com.mjr.twitchframework.kraken.objects.channels.KrakenUserFollowedByUser;
+import com.mjr.twitchframework.kraken.objects.channels.*;
 import com.mjr.twitchframework.kraken.objects.streams.KrakenStream;
 import com.mjr.twitchframework.kraken.objects.users.KrakenFullUserInfo;
 import com.mjr.twitchframework.kraken.objects.users.KrakenSimpleUserInfo;
@@ -102,6 +99,45 @@ public class KrakenEndpointsManager {
 		return null;
 	}
 
+	public static int getChannelSubscribersCount(int channelID, String accessToken, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
+		HttpURLConnection connection = null;
+		connection = HTTPConnect.getRequest(KrakenEndpoints.getChannelsSubscriptionsAPI(channelID, 1, clientID, accessToken));
+		int responseCode = connection.getResponseCode();
+		if (responseCode == 429)
+			throw new TooManyRequestsException();
+		if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED)
+			throw new MissingOrInvalidAuthException();
+		if (responseCode == HttpURLConnection.HTTP_NOT_FOUND)
+			throw new FileNotFoundException();
+		if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_UNAVAILABLE)
+			throw new RemoteServerException();
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			return gson.fromJson(HTTPConnect.getResult(connection), KrakenChannelSubscriberInfo.class).getTotal();
+		}
+		return -1;
+	}
+
+	public static KrakenSubscription doesUserSubToChannel(int channelID, int userID, String accessToken, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
+		HttpURLConnection connection = null;
+		connection = HTTPConnect.getRequest(KrakenEndpoints.checkUserSubbedChannel(channelID, userID, clientID, accessToken));
+		int responseCode = connection.getResponseCode();
+		if (responseCode == 429)
+			throw new TooManyRequestsException();
+		if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED)
+			throw new MissingOrInvalidAuthException();
+		if (responseCode == HttpURLConnection.HTTP_NOT_FOUND)
+			throw new FileNotFoundException();
+		if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_UNAVAILABLE)
+			throw new RemoteServerException();
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			return gson.fromJson(HTTPConnect.getResult(connection), KrakenSubscription.class);
+		}
+		return null;
+	}
+
+	public static KrakenSubscription doesUserSubToChannel(int channelID, String userName, String accessToken, String clientID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
+		return doesUserSubToChannel(channelID, getUserIDFromChannelName(clientID, userName), clientID, accessToken);
+	}
 
 	/*
 	Chat Section
@@ -280,7 +316,7 @@ public class KrakenEndpointsManager {
 		if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_UNAVAILABLE)
 			throw new RemoteServerException();
 		if (responseCode == HttpURLConnection.HTTP_OK) {
-			return Integer.parseInt(gson.fromJson(HTTPConnect.getResult(connection), KrakenSimpleUserInfo.class).getId());
+			return Integer.parseInt(gson.fromJson(HTTPConnect.getResult(connection), KrakenSimpleUsersInfo.class).getUsers().get(0).getId());
 		}
 		return -1;
 	}

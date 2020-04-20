@@ -38,6 +38,10 @@ public class KrakenEndpoints {
 		return "https://api.twitch.tv/kraken/channels/" + channelID + "/subscriptions?client_id=" + clientID + "&oauth_token=" + accessToken + "&limit=" + limit + "&offset=" + offset + "&api_version=5";
 	}
 
+	public static String checkUserSubbedChannel(int channelID, int userID, String clientID, String accessToken) {
+		return "https://api.twitch.tv/kraken/channels/" + channelID + "/subscriptions/" + userID + "?client_id=" + clientID + "&oauth_token=" + accessToken + "&api_version=5";
+	}
+
 	public static String getChatAPI(int channelID, String clientID) {
 		return "https://api.twitch.tv/kraken/chat/" + channelID + "?client_id=" + clientID + "&api_version=5";
 	}
@@ -57,4 +61,5 @@ public class KrakenEndpoints {
 	public static String getUserIDFromChannelNameAPI(String clientID, String... channelNames) {
 		return "https://api.twitch.tv/kraken/users?login=" + String.join(",", channelNames) + "&client_id=" + clientID + "&api_version=5";
 	}
+
 }
