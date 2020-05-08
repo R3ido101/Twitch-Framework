@@ -8,4 +8,8 @@ public class HelixEndpoints {
 	public static String webHookSubscriptions() {
 		return "https://api.twitch.tv/helix/webhooks/subscriptions";
 	}
+
+	public static String getGames(int gameID) {
+		return "https://api.twitch.tv/helix/games?id=" + gameID;
+	}
 }

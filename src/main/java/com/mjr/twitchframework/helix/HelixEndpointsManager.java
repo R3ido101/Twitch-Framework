@@ -12,6 +12,8 @@ import com.google.gson.JsonParser;
 import com.mjr.twitchframework.exceptions.MissingOrInvalidAuthException;
 import com.mjr.twitchframework.exceptions.RemoteServerException;
 import com.mjr.twitchframework.exceptions.TooManyRequestsException;
+import com.mjr.twitchframework.helix.objects.GameData;
+import com.mjr.twitchframework.helix.objects.GameDataList;
 import com.mjr.twitchframework.helix.objects.HelixWebHookSubscriptions;
 import com.mjr.twitchframework.util.HTTPConnect;
 
@@ -127,6 +129,28 @@ public class HelixEndpointsManager {
 			JsonObject result = gsonParser.parse(HTTPConnect.getResult(connection)).getAsJsonObject();
 			JsonElement stream = result.get("stream");
 			return gson.fromJson(stream.getAsJsonObject(), HelixWebHookSubscriptions.class);
+		}
+		return null;
+	}
+
+	public static GameData getGameDataFromID(String appAccessToken, String clientID, int gameID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
+		HashMap<String, String> headers = new HashMap<String, String>();
+		headers.put("Authorization", "Bearer " + appAccessToken);
+		headers.put("Client-ID", clientID);
+		HttpURLConnection connection = null;
+		connection = HTTPConnect.getRequestWithHeader(HelixEndpoints.getGames(gameID), headers);
+		int responseCode = connection.getResponseCode();
+		if (responseCode == 429)
+			throw new TooManyRequestsException();
+		if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED)
+			throw new MissingOrInvalidAuthException();
+		if (responseCode == HttpURLConnection.HTTP_NOT_FOUND)
+			throw new FileNotFoundException();
+		if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_UNAVAILABLE)
+			throw new RemoteServerException();
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			JsonObject result = gsonParser.parse(HTTPConnect.getResult(connection)).getAsJsonObject();
+			return gson.fromJson(result.getAsJsonObject(), GameDataList.class).getData().get(0);
 		}
 		return null;
 	}
