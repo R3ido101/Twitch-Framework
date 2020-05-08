@@ -1,5 +1,7 @@
 package com.mjr.twitchframework.irc.events;
 
+import java.util.Map;
+
 import com.mjr.twitchframework.Event;
 
 public class IRCMessageEvent extends Event {
@@ -9,18 +11,18 @@ public class IRCMessageEvent extends Event {
 	public final String login;
 	public final String hostname;
 	public final String userID;
-	public final boolean subscriber;
 	public final String message;
+	public final Map<String, String> tags;
 
-	public IRCMessageEvent(String channel, String sender, String login, String hostname, String userID, boolean subscriber, String message) {
+	public IRCMessageEvent(String channel, String sender, String login, String hostname, String userID, String message, Map<String, String> tags) {
 		super(IRCEventType.MESSAGE);
 		this.channel = channel;
 		this.sender = sender;
 		this.login = login;
 		this.hostname = hostname;
 		this.userID = userID;
-		this.subscriber = subscriber;
 		this.message = message;
+		this.tags = tags;
 	}
 
 	public IRCMessageEvent() {
@@ -30,8 +32,8 @@ public class IRCMessageEvent extends Event {
 		this.login = null;
 		this.hostname = null;
 		this.userID = null;
-		this.subscriber = false;
 		this.message = null;
+		this.tags = null;
 	}
 
 	public void onEvent(IRCMessageEvent event) {

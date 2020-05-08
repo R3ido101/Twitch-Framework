@@ -1,15 +1,17 @@
 package com.mjr.twitchframework.irc;
 
+import java.util.Map;
+
 import com.mjr.twitchframework.Event;
 import com.mjr.twitchframework.Event.IRCEventType;
 import com.mjr.twitchframework.irc.events.*;
 import com.mjr.twitchframework.irc.events.special.*;
 
 public class TwitchIRCEventHooks {
-	public static void triggerOnMessageEvent(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {
+	public static void triggerOnMessageEvent(String channel, String sender, String login, String hostname, String userID, String message, Map<String, String> tags) {
 		for (Event event : TwitchIRCManager.getEventListeners()) {
 			if (IRCEventType.MESSAGE.getName().equalsIgnoreCase(event.typeIRC.getName()))
-				((IRCMessageEvent) event).onEvent(new IRCMessageEvent(channel, sender, login, hostname, userID, subscriber, message));
+				((IRCMessageEvent) event).onEvent(new IRCMessageEvent(channel, sender, login, hostname, userID, message, tags));
 		}
 	}
 

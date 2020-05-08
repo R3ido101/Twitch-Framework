@@ -47,12 +47,12 @@ public class TwitchIRCClient extends PircBot {
 	}
 
 	@Override
-	public void onMessage(final String channel, final String sender, final String login, final String hostname, final String userID, final boolean subscriber, final String message) {
-		TwitchIRCEventHooks.triggerOnMessageEvent(channel, sender, login, hostname, userID, subscriber, message);
+	protected void onMessageWithTags(String channel, String sender, String login, String hostname, String userID, String message, Map<String, String> tags) {
+		TwitchIRCEventHooks.triggerOnMessageEvent(channel, sender, login, hostname, userID, message, tags);
 	}
 
 	@Override
-	public void onMessageExtra(final String line, final String channel, final String sender, final String login, final String hostname, final String message) {
+	public void onMessageRaw(final String line, final String channel, final String sender, final String login, final String hostname, final String message) {
 		TwitchIRCEventHooks.triggerOnMessageExtraEvent(line, channel, sender, login, hostname, message);
 		if (line.contains("bits="))
 			TwitchIRCEventHooks.triggerOnBitsEvent(line, channel, sender, login, hostname, message);
