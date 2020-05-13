@@ -2,7 +2,7 @@ package com.mjr.twitchframework;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.*;
 
 import com.mjr.twitchframework.irc.TwitchIRCClient;
 import com.mjr.twitchframework.irc.TwitchIRCEventHooks;
@@ -25,33 +25,67 @@ public class TwitchReconnectThread extends Thread {
 	public void run() {
 		while (true) {
 			try {
+				ExecutorService threadPool = Executors.newCachedThreadPool();
+				int attempt = 0;
 				if (twitchClients.size() != 0) {
 					Iterator<TwitchIRCClient> iterator = twitchClients.iterator();
 					while (iterator.hasNext()) {
 						TwitchIRCClient client = iterator.next();
-						TwitchIRCEventHooks.triggerOnInfoEvent("Reconnecting IRC client, Client ID: " + client.getID());
-						client.reconnect();
-						Thread.sleep(twitchClientIRCSleepTime * 1000);
-						if (client.isClientConnected()) {
-							twitchClients.remove(client);
-							TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected IRC client, Client ID: " + client.getID());
-							client.requestCapabilities();
-							client.connectToChannels();
-							TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for IRC client, Client ID: " + client.getID());
-						}
+						do {
+							attempt = attempt + 1;
+							TwitchIRCEventHooks.triggerOnInfoEvent("Reconnecting IRC client, Client ID: " + client.getID());
+							Callable<Boolean> callable = () -> {
+								client.reconnect();
+								return true;
+							};
+							Future<Boolean> future = threadPool.submit(callable);
+							try {
+								future.get(30, TimeUnit.SECONDS);
+							} catch (TimeoutException e) {
+								TwitchIRCEventHooks.triggerOnErrorEvent("[Twitch Framework IRC Reconnect] Timeout", e);
+								TwitchIRCEventHooks.triggerOnInfoEvent("[witch Framework IRC Reconnect] IRC reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
+								if (!client.isClientConnected())
+									client.disconnect();
+							}
+							Thread.sleep(twitchClientIRCSleepTime * 1000);
+							if (client.isClientConnected()) {
+								twitchClients.remove(client);
+								TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected IRC client, Client ID: " + client.getID());
+								client.requestCapabilities();
+								client.connectToChannels();
+								TwitchIRCEventHooks.triggerOnInfoEvent("Joining back channels for IRC client, Client ID: " + client.getID());
+							}
+						} while (!client.isClientConnected() && attempt < 10);
+						attempt = 0;
 					}
 				}
 				if (twitchPubSubs.size() != 0) {
 					Iterator<TwitchWebsocketClient> iterator = twitchPubSubs.iterator();
 					while (iterator.hasNext()) {
 						TwitchWebsocketClient client = iterator.next();
-						client.reconnectClient();
-						TwitchIRCEventHooks.triggerOnInfoEvent("Reconnecting PubSub client, Channel ID: " + client.getChannelID());
-						Thread.sleep(twitchClientPubSubSleepTime * 1000);
-						if (client.isOpen()) {
-							twitchPubSubs.remove(client);
-							TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected PubSub client, Channel ID: " + client.getChannelID());
-						}
+						do {
+							attempt = attempt + 1;
+							TwitchIRCEventHooks.triggerOnInfoEvent("Reconnecting PubSub client, Channel ID: " + client.getChannelID());
+							Callable<Boolean> callable = () -> {
+								client.reconnectClient();
+								return true;
+							};
+							Future<Boolean> future = threadPool.submit(callable);
+							try {
+								future.get(30, TimeUnit.SECONDS);
+							} catch (TimeoutException e) {
+								TwitchIRCEventHooks.triggerOnErrorEvent("[Twitch Framework PubSub Reconnect] Timeout", e);
+								TwitchIRCEventHooks.triggerOnInfoEvent("[witch Framework PubSub Reconnect] PubSub reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
+								if (!client.isOpen())
+									client.closeBlocking();
+							}
+							Thread.sleep(twitchClientPubSubSleepTime * 1000);
+							if (client.isOpen()) {
+								twitchPubSubs.remove(client);
+								TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected PubSub client, Channel ID: " + client.getChannelID());
+							}
+						} while (!client.isOpen() && attempt < 10);
+						attempt = 0;
 					}
 				}
 				try {
