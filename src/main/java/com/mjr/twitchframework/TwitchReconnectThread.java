@@ -43,7 +43,7 @@ public class TwitchReconnectThread extends Thread {
 								future.get(30, TimeUnit.SECONDS);
 							} catch (TimeoutException e) {
 								TwitchIRCEventHooks.triggerOnErrorEvent("[Twitch Framework IRC Reconnect] Timeout", e);
-								TwitchIRCEventHooks.triggerOnInfoEvent("[witch Framework IRC Reconnect] IRC reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
+								TwitchIRCEventHooks.triggerOnInfoEvent("[Twitch Framework IRC Reconnect] IRC reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
 								if (!client.isClientConnected())
 									client.disconnect();
 							}
@@ -75,7 +75,7 @@ public class TwitchReconnectThread extends Thread {
 								future.get(30, TimeUnit.SECONDS);
 							} catch (TimeoutException e) {
 								TwitchIRCEventHooks.triggerOnErrorEvent("[Twitch Framework PubSub Reconnect] Timeout", e);
-								TwitchIRCEventHooks.triggerOnInfoEvent("[witch Framework PubSub Reconnect] PubSub reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
+								TwitchIRCEventHooks.triggerOnInfoEvent("[Twitch Framework PubSub Reconnect] PubSub reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
 								if (!client.isOpen())
 									client.closeBlocking();
 							}
