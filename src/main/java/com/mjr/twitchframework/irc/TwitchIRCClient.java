@@ -17,6 +17,12 @@ public class TwitchIRCClient extends PircBot {
 		this.ID = iD;
 	}
 
+	public void requestCapabilities(){
+		this.sendRawLine("CAP REQ :twitch.tv/commands");
+		this.sendRawLine("CAP REQ :twitch.tv/membership");
+		this.sendRawLine("CAP REQ :twitch.tv/tags");
+	}
+
 	public boolean connectToTwitch(String username, String password) throws IOException {
 		TwitchReconnectManager.initTwitchReconnectThreadIfDoesntExist();
 		if (!username.equals("") && !password.equals("") && !(username == null) && !(password == null)) {
@@ -24,9 +30,7 @@ public class TwitchIRCClient extends PircBot {
 			try {
 				TwitchIRCEventHooks.triggerOnInfoEvent("Connecting to Twitch! Client ID: " + ID);
 				this.connect("irc.chat.twitch.tv", 6667, password);
-				this.sendRawLine("CAP REQ :twitch.tv/commands");
-				this.sendRawLine("CAP REQ :twitch.tv/membership");
-				this.sendRawLine("CAP REQ :twitch.tv/tags");
+				requestCapabilities();
 				TwitchIRCEventHooks.triggerOnInfoEvent("Connected to Twitch! Client ID: " + ID);
 			} catch (Exception e) {
 				e.printStackTrace();
