@@ -12,4 +12,8 @@ public class HelixEndpoints {
 	public static String getGames(int gameID) {
 		return "https://api.twitch.tv/helix/games?id=" + gameID;
 	}
+
+	public static String getStreams(int userID) {
+		return "https://api.twitch.tv/helix/streams?user_id=" + userID;
+	}
 }

@@ -5,15 +5,13 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.mjr.twitchframework.exceptions.MissingOrInvalidAuthException;
 import com.mjr.twitchframework.exceptions.RemoteServerException;
 import com.mjr.twitchframework.exceptions.TooManyRequestsException;
 import com.mjr.twitchframework.helix.objects.GameData;
 import com.mjr.twitchframework.helix.objects.GameDataList;
+import com.mjr.twitchframework.helix.objects.HelixStreamData;
 import com.mjr.twitchframework.helix.objects.HelixWebHookSubscriptions;
 import com.mjr.twitchframework.util.HTTPConnect;
 
@@ -151,6 +149,30 @@ public class HelixEndpointsManager {
 		if (responseCode == HttpURLConnection.HTTP_OK) {
 			JsonObject result = gsonParser.parse(HTTPConnect.getResult(connection)).getAsJsonObject();
 			return gson.fromJson(result.getAsJsonObject(), GameDataList.class).getData().get(0);
+		}
+		return null;
+	}
+
+	public static HelixStreamData getStreams(String appAccessToken, String clientID, int userID) throws IOException, TooManyRequestsException, MissingOrInvalidAuthException, RemoteServerException {
+		HashMap<String, String> headers = new HashMap<String, String>();
+		headers.put("Authorization", "Bearer " + appAccessToken);
+		headers.put("Client-ID", clientID);
+		HttpURLConnection connection = null;
+		connection = HTTPConnect.getRequestWithHeader(HelixEndpoints.getStreams(userID), headers);
+		int responseCode = connection.getResponseCode();
+		if (responseCode == 429)
+			throw new TooManyRequestsException();
+		if (responseCode == HttpURLConnection.HTTP_UNAUTHORIZED)
+			throw new MissingOrInvalidAuthException();
+		if (responseCode == HttpURLConnection.HTTP_NOT_FOUND)
+			throw new FileNotFoundException();
+		if (responseCode == HttpURLConnection.HTTP_INTERNAL_ERROR || responseCode == HttpURLConnection.HTTP_BAD_GATEWAY || responseCode == HttpURLConnection.HTTP_UNAVAILABLE)
+			throw new RemoteServerException();
+		if (responseCode == HttpURLConnection.HTTP_OK) {
+			JsonObject result = gsonParser.parse(HTTPConnect.getResult(connection)).getAsJsonObject();
+			JsonArray array = result.getAsJsonObject().get("data").getAsJsonArray();
+			if(array.size() != 0)
+				return gson.fromJson(array.get(0).getAsJsonObject(), HelixStreamData.class);
 		}
 		return null;
 	}
