@@ -4,7 +4,7 @@ A Twitch Bot Framework made in Java using the Twitch IRC/PubSub. Made for making
 ### How to use/Example of usage
 Coming soon!
 
-#### Current Version: 1.1.7
+#### Current Version: 1.1.8
 ### With Maven
 In your `pom.xml` add:
 ```xml
