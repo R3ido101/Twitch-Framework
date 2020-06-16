@@ -16,12 +16,28 @@ public class TwitchPubSubManager {
 		return clients;
 	}
 
+	public static TwitchWebsocketClient getClientByChannelID(int channelID) {
+		for(TwitchWebsocketClient client : clients)
+			if(client.getChannelID() == channelID)
+				return client;
+		return null;
+	}
+
 	public static void setClients(List<TwitchWebsocketClient> clients) {
 		TwitchPubSubManager.clients = clients;
 	}
 
 	public static void addClient(TwitchWebsocketClient client) {
 		TwitchPubSubManager.clients.add(client);
+	}
+
+	public static void removeClient(TwitchWebsocketClient client) {
+		try {
+			client.close(1000, "Requested Forced Close");
+			TwitchPubSubManager.clients.remove(client);
+		} catch (Exception e) {
+			TwitchPubSubEventHooks.triggerErrorEvent(client, "Error when disconnecting/removing client", e);
+		}
 	}
 
 	public static void registerEventHandler(Event event) {
