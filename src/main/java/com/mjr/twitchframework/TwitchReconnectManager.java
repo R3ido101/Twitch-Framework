@@ -8,7 +8,7 @@ public class TwitchReconnectManager {
 	}
 
 	public static void initTwitchReconnectThreadIfDoesntExist() {
-		if (twitchReconnectThread == null) {
+		if (twitchReconnectThread == null || twitchReconnectThread.getState() == Thread.State.TERMINATED) {
 			twitchReconnectThread = new TwitchReconnectThread(2, 5);
 			twitchReconnectThread.start();
 		}

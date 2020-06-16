@@ -8,8 +8,9 @@ import com.mjr.twitchframework.irc.TwitchIRCClient;
 import com.mjr.twitchframework.irc.TwitchIRCEventHooks;
 import com.mjr.twitchframework.pubsub.TwitchPubSubEventHooks;
 import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
+import com.mjr.twitchframework.util.BasicKillableThread;
 
-public class TwitchReconnectThread extends Thread {
+public class TwitchReconnectThread extends BasicKillableThread {
 	private CopyOnWriteArrayList<TwitchIRCClient> twitchClients = new CopyOnWriteArrayList<TwitchIRCClient>();
 	private CopyOnWriteArrayList<TwitchWebsocketClient> twitchPubSubs = new CopyOnWriteArrayList<TwitchWebsocketClient>();
 
@@ -24,7 +25,7 @@ public class TwitchReconnectThread extends Thread {
 
 	@Override
 	public void run() {
-		while (true) {
+		while (!this.isKillThread()) {
 			try {
 				ExecutorService threadPool = Executors.newCachedThreadPool();
 				int attempt = 0;
