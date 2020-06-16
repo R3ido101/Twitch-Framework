@@ -6,6 +6,7 @@ import java.util.concurrent.*;
 
 import com.mjr.twitchframework.irc.TwitchIRCClient;
 import com.mjr.twitchframework.irc.TwitchIRCEventHooks;
+import com.mjr.twitchframework.pubsub.TwitchPubSubEventHooks;
 import com.mjr.twitchframework.pubsub.TwitchWebsocketClient;
 
 public class TwitchReconnectThread extends Thread {
@@ -65,7 +66,7 @@ public class TwitchReconnectThread extends Thread {
 						TwitchWebsocketClient client = iterator.next();
 						do {
 							attempt = attempt + 1;
-							TwitchIRCEventHooks.triggerOnInfoEvent("Reconnecting PubSub client, Channel ID: " + client.getChannelID());
+							TwitchPubSubEventHooks.triggerInfoEvent(client,"Reconnecting PubSub client, Channel ID: " + client.getChannelID());
 							Callable<Boolean> callable = () -> {
 								client.reconnectClient();
 								return true;
@@ -74,15 +75,15 @@ public class TwitchReconnectThread extends Thread {
 							try {
 								future.get(30, TimeUnit.SECONDS);
 							} catch (TimeoutException e) {
-								TwitchIRCEventHooks.triggerOnErrorEvent("[Twitch Framework PubSub Reconnect] Timeout", e);
-								TwitchIRCEventHooks.triggerOnInfoEvent("[Twitch Framework PubSub Reconnect] PubSub reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
+								TwitchPubSubEventHooks.triggerErrorEvent(client,"[Twitch Framework PubSub Reconnect] Timeout", e);
+								TwitchPubSubEventHooks.triggerInfoEvent(client,"[Twitch Framework PubSub Reconnect] PubSub reconnect has timed out for taking to long will skip and retry! Attempt " + attempt);
 								if (!client.isOpen())
 									client.closeBlocking();
 							}
 							Thread.sleep(twitchClientPubSubSleepTime * 1000);
 							if (client.isOpen()) {
 								twitchPubSubs.remove(client);
-								TwitchIRCEventHooks.triggerOnInfoEvent("Reconnected PubSub client, Channel ID: " + client.getChannelID());
+								TwitchPubSubEventHooks.triggerInfoEvent(client,"Reconnected PubSub client, Channel ID: " + client.getChannelID());
 							}
 						} while (!client.isOpen() && attempt < 10);
 						attempt = 0;
