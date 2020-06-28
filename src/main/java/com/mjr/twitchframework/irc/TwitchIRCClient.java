@@ -152,6 +152,7 @@ public class TwitchIRCClient extends PircBot {
 	public void addChannelWithConnect(String channel) {
 		this.channels.add(channel);
 		this.joinChannel("#" + channel);
+		requestCapabilities();
 	}
 
 	public void removeChannelWithDisconnect(String channel) {
