@@ -100,18 +100,16 @@ public class TwitchIRCManager {
 
 	public static void addChannel(String channelName, int limit, String username, String password, boolean verbose) throws IOException {
 		try {
-			boolean found = false;
 			for (TwitchIRCClient client : clients) {
 				if (client.getChannelsList().size() < limit) {
-					found = true;
 					client.addChannelWithConnect(channelName);
 					TwitchIRCEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a client");
 					return;
 				}
 			}
-			if (!found) {
-				setupClient(username, password, verbose);
-			}
+			TwitchIRCClient client = setupClient(username, password, verbose);
+			client.addChannelWithConnect(channelName);
+			TwitchIRCEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a client");
 		} catch (Exception e) {
 			TwitchIRCEventHooks.triggerOnErrorEvent(null, e);
 		}
