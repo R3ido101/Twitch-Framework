@@ -103,13 +103,13 @@ public class TwitchIRCManager {
 			for (TwitchIRCClient client : clients) {
 				if (client.getChannelsList().size() < limit) {
 					client.addChannelWithConnect(channelName);
-					TwitchIRCEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a client");
+					TwitchIRCEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a an existing Client, ID: " + client.getID());
 					return;
 				}
 			}
 			TwitchIRCClient client = setupClient(username, password, verbose);
 			client.addChannelWithConnect(channelName);
-			TwitchIRCEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a client");
+			TwitchIRCEventHooks.triggerOnInfoEvent("Added channel " + channelName + " to a New Connected Client, ID: " + client.getID());
 		} catch (Exception e) {
 			TwitchIRCEventHooks.triggerOnErrorEvent(null, e);
 		}
@@ -122,7 +122,7 @@ public class TwitchIRCManager {
 			for (TwitchIRCClient client : clientsOld) {
 				if (client.getChannelsList().contains(channelName)) {
 					client.removeChannelWithDisconnect(channelName);
-					TwitchIRCEventHooks.triggerOnInfoEvent("Removed channel " + channelName + " from a client");
+					TwitchIRCEventHooks.triggerOnInfoEvent("Removed channel " + channelName + " from a Client ID: " + client.getID());
 					if (client.getChannelsList().size() == 0) {
 						disconnectClient(client);
 						TwitchIRCEventHooks.triggerOnInfoEvent("Closed connection due to having no channels for the connection!");
